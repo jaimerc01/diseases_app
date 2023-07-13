@@ -1,31 +1,3 @@
-// Copyright (c) 2022 Kodeco LLC
-
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-
-// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
-// distribute, sublicense, create a derivative work, and/or sell copies of the
-// Software in any work that is designed, intended, or marketed for pedagogical
-// or instructional purposes related to programming, coding,
-// application development, or information technology.  Permission for such use,
-// copying, modification, merger, publication, distribution, sublicensing,
-// creation of derivative works, or sale is expressly withheld.
-
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -33,16 +5,20 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import '../classifier/classifier.dart';
 import '../styles.dart';
-import 'plant_photo_view.dart';
+import 'disease_image.dart';
 
 const _labelsFileName = 'assets/labels.txt';
 const _modelFileName = 'model_unquant.tflite';
 
-class PlantRecogniser extends StatefulWidget {
-  const PlantRecogniser({super.key});
+class DiseaseRecogniser extends StatefulWidget {
+  const DiseaseRecogniser({super.key});
+
+  static const routeName = '/plant';
+
+  final String title = 'Primera versión';
 
   @override
-  State<PlantRecogniser> createState() => _PlantRecogniserState();
+  State<DiseaseRecogniser> createState() => _DiseaseRecogniserState();
 }
 
 enum _ResultStatus {
@@ -51,14 +27,14 @@ enum _ResultStatus {
   found,
 }
 
-class _PlantRecogniserState extends State<PlantRecogniser> {
+class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   bool _isAnalyzing = false;
   final picker = ImagePicker();
   File? _selectedImageFile;
 
   // Result
   _ResultStatus _resultStatus = _ResultStatus.notStarted;
-  String _plantLabel = ''; // Name of Error Message
+  String _diseaseLabel = '';
   double _accuracy = 0.0;
 
   late Classifier? _classifier;
@@ -83,43 +59,73 @@ class _PlantRecogniserState extends State<PlantRecogniser> {
     _classifier = classifier;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: kBgColor,
-      width: double.infinity,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(top: 30),
-            child: _buildTitle(),
-          ),
-          const SizedBox(height: 20),
-          _buildPhotolView(),
-          const SizedBox(height: 10),
-          _buildResultView(),
-          const Spacer(flex: 5),
-          _buildPickPhotoButton(
-            title: 'Take a photo',
-            source: ImageSource.camera,
-          ),
-          _buildPickPhotoButton(
-            title: 'Pick from gallery',
-            source: ImageSource.gallery,
-          ),
-          const Spacer(),
-        ],
-      ),
-    );
+  int drawerValue = 1;
+
+  void _onSelectItem(int pos) {
+    setState(() {
+      drawerValue = pos;
+    });
   }
 
-  Widget _buildPhotolView() {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text(widget.title)),
+        drawer: Drawer(
+            child: ListView(
+          children: <Widget>[
+            ListTile(
+              title: const Text('Dashboard'),
+              selected: (0 == drawerValue),
+              onTap: () {
+                _onSelectItem(0);
+                Navigator.pushNamed(context, '/dashboard');
+              },
+            ),
+            ListTile(
+              title: const Text('Classifier'),
+              selected: (1 == drawerValue),
+              onTap: () {
+                _onSelectItem(1);
+                Navigator.pushNamed(context, '/plant');
+              },
+            )
+          ],
+        )),
+        backgroundColor: kBgColor,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: _buildTitle(),
+              ),
+              const SizedBox(height: 20),
+              _buildImageView(),
+              const SizedBox(height: 10),
+              _buildResultView(),
+              const Spacer(flex: 5),
+              /*_buildPickPhotoButton(
+                title: 'Take a photo',
+                source: ImageSource.camera,
+              ),*/
+              _buildPickPhotoButton(
+                title: 'Pick from gallery',
+                source: ImageSource.gallery,
+              ),
+              const Spacer(),
+            ],
+          ),
+        ));
+  }
+
+  Widget _buildImageView() {
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
-        PlantPhotoView(file: _selectedImageFile),
+        DiseaseImage(file: _selectedImageFile),
         _buildAnalyzingText(),
       ],
     );
@@ -134,7 +140,7 @@ class _PlantRecogniserState extends State<PlantRecogniser> {
 
   Widget _buildTitle() {
     return const Text(
-      'Plant Recogniser',
+      'Disease Recogniser',
       style: kTitleTextStyle,
       textAlign: TextAlign.center,
     );
@@ -145,7 +151,7 @@ class _PlantRecogniserState extends State<PlantRecogniser> {
     required String title,
   }) {
     return TextButton(
-      onPressed: () => _onPickPhoto(source),
+      onPressed: () => _onPickImage(source),
       child: Container(
         width: 300,
         height: 50,
@@ -168,7 +174,7 @@ class _PlantRecogniserState extends State<PlantRecogniser> {
     });
   }
 
-  void _onPickPhoto(ImageSource source) async {
+  void _onPickImage(ImageSource source) async {
     final pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile == null) {
@@ -200,7 +206,7 @@ class _PlantRecogniserState extends State<PlantRecogniser> {
 
     setState(() {
       _resultStatus = result;
-      _plantLabel = plantLabel;
+      _diseaseLabel = plantLabel;
       _accuracy = accuracy;
     });
   }
@@ -211,7 +217,7 @@ class _PlantRecogniserState extends State<PlantRecogniser> {
     if (_resultStatus == _ResultStatus.notFound) {
       title = 'Fail to recognise';
     } else if (_resultStatus == _ResultStatus.found) {
-      title = _plantLabel;
+      title = _diseaseLabel;
     } else {
       title = '';
     }

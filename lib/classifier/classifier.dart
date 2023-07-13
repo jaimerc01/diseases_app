@@ -1,37 +1,5 @@
-// Copyright (c) 2022 Kodeco LLC
-
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-
-// Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
-// distribute, sublicense, create a derivative work, and/or sell copies of the
-// Software in any work that is designed, intended, or marketed for pedagogical
-// or instructional purposes related to programming, coding,
-// application development, or information technology.  Permission for such use,
-// copying, modification, merger, publication, distribution, sublicensing,
-// creation of derivative works, or sale is expressly withheld.
-
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart';
-
-import 'classifier_category.dart';
-import 'classifier_model.dart';
-
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
@@ -54,11 +22,8 @@ class Classifier {
     required String modelFileName,
   }) async {
     try {
-      // TODO: _loadLabels
       final labels = await _loadLabels(labelsFileName);
-      // TODO: _loadModel
       final model = await _loadModel(modelFileName);
-      // TODO: build and return Classifier
       return Classifier._(labels: labels, model: model);
     } catch (e) {
       debugPrint('Can\'t initialize Classifier: ${e.toString()}');
@@ -86,8 +51,6 @@ class Classifier {
     final resultCategories = _postProcessOutput(outputBuffer);
     final topResult = resultCategories.first;
 
-    debugPrint('Top category: $topResult');
-
     return topResult;
   }
 
@@ -97,10 +60,9 @@ class Classifier {
 
     // #2
     final labels = rawLabels
-      .map((label) => label.substring(label.indexOf(' ')).trim())
-      .toList();
+        .map((label) => label.substring(label.indexOf(' ')).trim())
+        .toList();
 
-    debugPrint('Labels: $labels');
     return labels;
   }
 
@@ -112,16 +74,10 @@ class Classifier {
     final inputShape = interpreter.getInputTensor(0).shape;
     final outputShape = interpreter.getOutputTensor(0).shape;
 
-    debugPrint('Input shape: $inputShape');
-    debugPrint('Output shape: $outputShape');
-
     // #3
     final inputType = interpreter.getInputTensor(0).type;
     final outputType = interpreter.getOutputTensor(0).type;
 
-    debugPrint('Input type: $inputType');
-    debugPrint('Output type: $outputType');
-    
     return ClassifierModel(
       interpreter: interpreter,
       inputShape: inputShape,
@@ -149,10 +105,10 @@ class Classifier {
 
     // #5
     final imageProcessor = ImageProcessorBuilder()
-      .add(cropOp)
-      .add(resizeOp)
-      .add(normalizeOp)
-      .build();
+        .add(cropOp)
+        .add(resizeOp)
+        .add(normalizeOp)
+        .build();
 
     imageProcessor.process(inputTensor);
 
@@ -174,13 +130,41 @@ class Classifier {
     labelledResult.getMapWithFloatValue().forEach((key, value) {
       final category = ClassifierCategory(key, value);
       categoryList.add(category);
-      debugPrint('label: ${category.label}, score: ${category.score}');
     });
-    
+
     // #4
     categoryList.sort((a, b) => (b.score > a.score ? 1 : -1));
 
     return categoryList;
   }
+}
 
+class ClassifierCategory {
+  final String label;
+  final double score;
+
+  ClassifierCategory(this.label, this.score);
+
+  @override
+  String toString() {
+    return 'Category{label: $label, score: $score}';
+  }
+}
+
+class ClassifierModel {
+  Interpreter interpreter;
+
+  List<int> inputShape;
+  List<int> outputShape;
+
+  TfLiteType inputType;
+  TfLiteType outputType;
+
+  ClassifierModel({
+    required this.interpreter,
+    required this.inputShape,
+    required this.outputShape,
+    required this.inputType,
+    required this.outputType,
+  });
 }

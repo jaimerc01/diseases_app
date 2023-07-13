@@ -1,4 +1,4 @@
-0 Rose
-1 Daisy
-2 Sunflower
-3 Tulip
+0 normal
+1 esophagitis
+2 ulcerative_c...
+3 polyps
