@@ -6,16 +6,16 @@ import 'package:image_picker/image_picker.dart';
 import '../classifier/classifier.dart';
 import '../styles.dart';
 import 'disease_image.dart';
+import 'drawer_app.dart';
 
 const _labelsFileName = 'assets/labels.txt';
 const _modelFileName = 'model_unquant.tflite';
 
 class DiseaseRecogniser extends StatefulWidget {
-  const DiseaseRecogniser({super.key});
+  final String? title;
+  const DiseaseRecogniser({super.key, required this.title});
 
-  static const routeName = '/plant';
-
-  final String title = 'Primera versión';
+  static const routeName = '/classifier';
 
   @override
   State<DiseaseRecogniser> createState() => _DiseaseRecogniserState();
@@ -59,39 +59,11 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     _classifier = classifier;
   }
 
-  int drawerValue = 1;
-
-  void _onSelectItem(int pos) {
-    setState(() {
-      drawerValue = pos;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
-        drawer: Drawer(
-            child: ListView(
-          children: <Widget>[
-            ListTile(
-              title: const Text('Dashboard'),
-              selected: (0 == drawerValue),
-              onTap: () {
-                _onSelectItem(0);
-                Navigator.pushNamed(context, '/dashboard');
-              },
-            ),
-            ListTile(
-              title: const Text('Classifier'),
-              selected: (1 == drawerValue),
-              onTap: () {
-                _onSelectItem(1);
-                Navigator.pushNamed(context, '/plant');
-              },
-            )
-          ],
-        )),
+        appBar: AppBar(title: Text(widget.title!)),
+        drawer: const DrawerApp(drawerValue: 1),
         backgroundColor: kBgColor,
         body: Center(
           child: Column(

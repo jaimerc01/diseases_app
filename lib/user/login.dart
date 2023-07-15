@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'signup.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -24,9 +23,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    if (_boxLogin.get('loginStatus') == false) {
+    /*if (_boxLogin.get('loginStatus') == false) {
       Navigator.pushNamed(context, '/dashboard');
-    }
+    }*/
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -63,9 +62,9 @@ class _LoginState extends State<Login> {
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter DNI.';
+                    return 'Please enter DNI/NIF.';
                   } else if (!_boxPatients.containsKey(value)) {
-                    return 'DNI is not registered.';
+                    return 'DNI/NIF is not registered.';
                   }
 
                   return null;
@@ -97,11 +96,15 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter password.';
-                  } else if (value !=
-                      _boxPatients.get(_controllerDni.text)['Password']) {
-                    return 'Wrong password.';
+                  try {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter password.';
+                    } else if (value !=
+                        _boxPatients.get(_controllerDni.text)['Password']) {
+                      return 'Wrong password.';
+                    }
+                  } on NoSuchMethodError {
+                    debugPrint('Búsqueda de DNI/NIF');
                   }
 
                   return null;
@@ -135,14 +138,7 @@ class _LoginState extends State<Login> {
                         onPressed: () {
                           _formKey.currentState?.reset();
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const Signup();
-                              },
-                            ),
-                          );
+                          Navigator.pushNamed(context, '/signup');
                         },
                         child: const Text('Signup'),
                       ),

@@ -5,6 +5,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 class Signup extends StatefulWidget {
   const Signup({super.key});
 
+  static const routeName = '/signup';
+
   @override
   State<Signup> createState() => _SignupState();
 }
@@ -23,7 +25,7 @@ class _SignupState extends State<Signup> {
   final TextEditingController _controllerConFirmPassword =
       TextEditingController();
 
-  final _patientsBox = Hive.box('patients');
+  final _boxPatients = Hive.box('patients');
   bool _obscurePassword = true;
 
   @override
@@ -67,7 +69,7 @@ class _SignupState extends State<Signup> {
                     return 'El tamaño no coincide con el de un DNI/NIE.';
                   } else if (!value.isValidDNI() && !value.isValidNIE()) {
                     return 'Introduzca correctamente el DNI/NIE';
-                  } else if (_patientsBox.containsKey(value)) {
+                  } else if (_boxPatients.containsKey(value)) {
                     return 'DNI/NIE is already registered.';
                   }
 
@@ -205,7 +207,7 @@ class _SignupState extends State<Signup> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
-                        _patientsBox.put(_controllerDni.text, {
+                        _boxPatients.put(_controllerDni.text, {
                           'DNI': _controllerDni.text,
                           'Password': _controllerConFirmPassword.text,
                           'Email': _controllerEmail.text,

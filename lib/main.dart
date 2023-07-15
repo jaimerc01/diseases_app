@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'dashboard.dart';
-import 'login/login.dart';
+import 'widget/dashboard.dart';
+import 'user/login.dart';
+import 'user/signup.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'widget/disease_recogniser.dart';
+import 'user/profile.dart';
+import 'user/update_profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +18,8 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  final String? title = 'Segunda versión';
 
   // This widget is the root of your application.
   @override
@@ -27,9 +32,13 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: Login.routeName,
         routes: {
-          Dashboard.routeName: (context) => const Dashboard(),
+          Dashboard.routeName: (context) => Dashboard(title: title),
           Login.routeName: (context) => const Login(),
-          DiseaseRecogniser.routeName: (context) => const DiseaseRecogniser(),
+          DiseaseRecogniser.routeName: (context) =>
+              DiseaseRecogniser(title: title),
+          Profile.routeName: (context) => Profile(title: title),
+          Signup.routeName: (context) => const Signup(),
+          UpdateProfile.routeName: (context) => UpdateProfile(title: title),
         });
   }
 }

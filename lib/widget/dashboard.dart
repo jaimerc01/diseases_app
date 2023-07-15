@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'drawer_app.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  final String? title;
+  const Dashboard({super.key, required this.title});
 
   static const routeName = '/dashboard';
-
-  final String title = 'Primera versión';
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -21,42 +21,14 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  int drawerValue = 0;
-
-  void _onSelectItem(int pos) {
-    setState(() {
-      drawerValue = pos;
-    });
-  }
-
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      drawer: Drawer(
-          child: ListView(
-        children: <Widget>[
-          ListTile(
-            title: const Text('Dashboard'),
-            selected: (0 == drawerValue),
-            onTap: () {
-              _onSelectItem(0);
-              Navigator.pushNamed(context, '/dashboard');
-            },
-          ),
-          ListTile(
-            title: const Text('Classifier'),
-            selected: (1 == drawerValue),
-            onTap: () {
-              _onSelectItem(1);
-              Navigator.pushNamed(context, '/plant');
-            },
-          )
-        ],
-      )),
+      appBar: AppBar(title: Text(widget.title!)),
+      drawer: const DrawerApp(drawerValue: 0),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
