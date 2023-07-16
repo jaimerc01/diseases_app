@@ -39,6 +39,13 @@ class _DrawerAppState extends State<DrawerApp> {
           },
         ),
         ListTile(
+          title: const Text('History'),
+          selected: (3 == widget.drawerValue),
+          onTap: () {
+            Navigator.pushNamed(context, '/history');
+          },
+        ),
+        ListTile(
           title: const Text('Sign off'),
           onTap: () {
             _boxLogin.delete(_boxLogin.get('DNI'));

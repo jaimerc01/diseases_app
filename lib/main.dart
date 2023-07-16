@@ -8,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'widget/disease_recogniser.dart';
 import 'user/profile.dart';
 import 'user/update_profile.dart';
+import 'user/history.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
           Profile.routeName: (context) => Profile(title: title),
           Signup.routeName: (context) => const Signup(),
           UpdateProfile.routeName: (context) => UpdateProfile(title: title),
+          History.routeName: (context) => History(title: title),
         });
   }
 }
@@ -63,5 +65,10 @@ Future<void> _initHive() async {
       encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
   await Hive.openBox('doctors',
       encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
-  await Hive.openBox('login');
+  await Hive.openBox('history',
+      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
+  await Hive.openBox('userHistory',
+      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
+  await Hive.openBox('login',
+      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
 }

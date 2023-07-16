@@ -5,13 +5,14 @@ import '../styles.dart';
 
 class DiseaseImage extends StatelessWidget {
   final File? file;
-  const DiseaseImage({super.key, this.file});
+  final double? size;
+  const DiseaseImage({super.key, this.file, this.size});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250,
-      height: 250,
+      width: size,
+      height: size,
       color: Colors.grey,
       child: (file == null)
           ? _emptyWidget()

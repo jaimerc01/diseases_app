@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +6,8 @@ import '../classifier/classifier.dart';
 import '../styles.dart';
 import 'disease_image.dart';
 import 'drawer_app.dart';
+import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 
 const _labelsFileName = 'assets/labels.txt';
 const _modelFileName = 'model_unquant.tflite';
@@ -31,6 +32,9 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   bool _isAnalyzing = false;
   final picker = ImagePicker();
   File? _selectedImageFile;
+  final double _bigSize = 250;
+  final _boxHistory = Hive.box('history');
+  final _boxLogin = Hive.box('login');
 
   // Result
   _ResultStatus _resultStatus = _ResultStatus.notStarted;
@@ -46,12 +50,6 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   }
 
   Future<void> _loadClassifier() async {
-    debugPrint(
-      'Start loading of Classifier with '
-      'labels at $_labelsFileName, '
-      'model at $_modelFileName',
-    );
-
     final classifier = await Classifier.loadWith(
       labelsFileName: _labelsFileName,
       modelFileName: _modelFileName,
@@ -59,45 +57,11 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     _classifier = classifier;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text(widget.title!)),
-        drawer: const DrawerApp(drawerValue: 1),
-        backgroundColor: kBgColor,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(top: 30),
-                child: _buildTitle(),
-              ),
-              const SizedBox(height: 20),
-              _buildImageView(),
-              const SizedBox(height: 10),
-              _buildResultView(),
-              const Spacer(flex: 5),
-              /*_buildPickPhotoButton(
-                title: 'Take a photo',
-                source: ImageSource.camera,
-              ),*/
-              _buildPickPhotoButton(
-                title: 'Pick from gallery',
-                source: ImageSource.gallery,
-              ),
-              const Spacer(),
-            ],
-          ),
-        ));
-  }
-
   Widget _buildImageView() {
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
-        DiseaseImage(file: _selectedImageFile),
+        DiseaseImage(file: _selectedImageFile, size: _bigSize),
         _buildAnalyzingText(),
       ],
     );
@@ -171,15 +135,28 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     final result = resultCategory.score >= 0.8
         ? _ResultStatus.found
         : _ResultStatus.notFound;
-    final plantLabel = resultCategory.label;
+    final diseaseLabel = resultCategory.label;
     final accuracy = resultCategory.score;
 
     _setAnalyzing(false);
 
     setState(() {
       _resultStatus = result;
-      _diseaseLabel = plantLabel;
+      _diseaseLabel = diseaseLabel;
       _accuracy = accuracy;
+    });
+  }
+
+  void _storeInHistory() {
+    final now = DateTime.now();
+    final formatter = DateFormat('dd-MM-yyyy');
+    final formattedDate = formatter.format(now);
+    _boxHistory.put(_selectedImageFile.toString(), {
+      'dni': '${_boxLogin.get('DNI')}',
+      'contenido': _selectedImageFile?.path,
+      'fecha': formattedDate,
+      'resultado': _diseaseLabel,
+      'precision': _accuracy,
     });
   }
 
@@ -194,11 +171,12 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
       title = '';
     }
 
-    //
     var accuracyLabel = '';
     if (_resultStatus == _ResultStatus.found) {
       accuracyLabel = 'Accuracy: ${(_accuracy * 100).toStringAsFixed(2)}%';
     }
+
+    _storeInHistory();
 
     return Column(
       children: [
@@ -207,5 +185,39 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
         Text(accuracyLabel, style: kResultRatingTextStyle)
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(title: Text(widget.title!)),
+        drawer: const DrawerApp(drawerValue: 1),
+        backgroundColor: kBgColor,
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(top: 30),
+                child: _buildTitle(),
+              ),
+              const SizedBox(height: 20),
+              _buildImageView(),
+              const SizedBox(height: 10),
+              _buildResultView(),
+              const Spacer(flex: 5),
+              /*_buildPickPhotoButton(
+                title: 'Take a photo',
+                source: ImageSource.camera,
+              ),*/
+              _buildPickPhotoButton(
+                title: 'Pick from gallery',
+                source: ImageSource.gallery,
+              ),
+              const Spacer(),
+            ],
+          ),
+        ));
   }
 }
