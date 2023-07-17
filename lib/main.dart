@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'widget/dashboard.dart';
 import 'user/login.dart';
@@ -20,8 +21,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  final String? title = 'Segunda versión';
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -33,14 +32,16 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: Login.routeName,
         routes: {
-          Dashboard.routeName: (context) => Dashboard(title: title),
+          Dashboard.routeName: (context) => const Dashboard(title: 'Inicio'),
           Login.routeName: (context) => const Login(),
           DiseaseRecogniser.routeName: (context) =>
-              DiseaseRecogniser(title: title),
-          Profile.routeName: (context) => Profile(title: title),
+              const DiseaseRecogniser(title: 'Clasificador'),
+          Profile.routeName: (context) =>
+              const Profile(title: 'Perfil personal'),
           Signup.routeName: (context) => const Signup(),
-          UpdateProfile.routeName: (context) => UpdateProfile(title: title),
-          History.routeName: (context) => History(title: title),
+          UpdateProfile.routeName: (context) =>
+              const UpdateProfile(title: 'Actualizar perfil'),
+          History.routeName: (context) => const History(title: 'Historial'),
         });
   }
 }
@@ -48,27 +49,26 @@ class MyApp extends StatelessWidget {
 Future<void> _initHive() async {
   const flutterSecureStorage = FlutterSecureStorage();
   final encryptionKey = await flutterSecureStorage.read(key: 'key');
+
+  Uint8List keyBytes;
+
   if (encryptionKey == null) {
     final key = Hive.generateSecureKey();
+    keyBytes = Uint8List.fromList(key);
     await flutterSecureStorage.write(
       key: 'key',
       value: base64UrlEncode(key),
     );
+  } else {
+    keyBytes = base64Url.decode(encryptionKey);
   }
-  final key = await flutterSecureStorage.read(key: 'key');
-  final encryptionKeyDecoded = base64Url.decode(key!);
+  final encryptionCipher = HiveAesCipher(keyBytes);
 
   await Hive.initFlutter();
-  await Hive.openBox('patients',
-      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
-  await Hive.openBox('admins',
-      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
-  await Hive.openBox('doctors',
-      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
-  await Hive.openBox('history',
-      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
-  await Hive.openBox('userHistory',
-      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
-  await Hive.openBox('login',
-      encryptionCipher: HiveAesCipher(encryptionKeyDecoded));
+  await Hive.openBox('patients', encryptionCipher: encryptionCipher);
+  await Hive.openBox('admins', encryptionCipher: encryptionCipher);
+  await Hive.openBox('doctors', encryptionCipher: encryptionCipher);
+  await Hive.openBox('history', encryptionCipher: encryptionCipher);
+  await Hive.openBox('userHistory', encryptionCipher: encryptionCipher);
+  await Hive.openBox('login', encryptionCipher: encryptionCipher);
 }

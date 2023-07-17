@@ -18,35 +18,35 @@ class _DrawerAppState extends State<DrawerApp> {
         child: ListView(
       children: <Widget>[
         ListTile(
-          title: const Text('Dashboard'),
+          title: const Text('Inicio'),
           selected: (0 == widget.drawerValue),
           onTap: () {
-            Navigator.pushNamed(context, '/dashboard');
+            Navigator.pushNamed(context, '/');
           },
         ),
         ListTile(
-          title: const Text('Classifier'),
+          title: const Text('Clasificador'),
           selected: (1 == widget.drawerValue),
           onTap: () {
             Navigator.pushNamed(context, '/classifier');
           },
         ),
         ListTile(
-          title: const Text('Profile'),
+          title: const Text('Perfil'),
           selected: (2 == widget.drawerValue),
           onTap: () {
             Navigator.pushNamed(context, '/profile');
           },
         ),
         ListTile(
-          title: const Text('History'),
+          title: const Text('Historial'),
           selected: (3 == widget.drawerValue),
           onTap: () {
             Navigator.pushNamed(context, '/history');
           },
         ),
         ListTile(
-          title: const Text('Sign off'),
+          title: const Text('Cerrar sesión'),
           onTap: () {
             _boxLogin.delete(_boxLogin.get('DNI'));
             _boxLogin.put('loginStatus', false);

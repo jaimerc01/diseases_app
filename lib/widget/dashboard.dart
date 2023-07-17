@@ -6,21 +6,13 @@ class Dashboard extends StatefulWidget {
   final String? title;
   const Dashboard({super.key, required this.title});
 
-  static const routeName = '/dashboard';
+  static const routeName = '/';
 
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
 
@@ -31,24 +23,22 @@ class _DashboardState extends State<Dashboard> {
       drawer: const DrawerApp(drawerValue: 0),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            const Text(
-              'Me has presionado tantas veces:',
-            ),
+            const SizedBox(height: 150),
             Text(
-              '$_counter',
+              'Bienvenido de nuevo',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
-            Text(_boxPatients.get(_boxLogin.get('DNI'))['Email'].toString())
+            const SizedBox(height: 20),
+            Text(
+              _boxPatients.isNotEmpty
+                  ? _boxPatients.get(_boxLogin.get('DNI'))['Name'].toString()
+                  : '',
+              style: Theme.of(context).textTheme.headlineSmall,
+            )
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _incrementCounter,
-        tooltip: 'Incrementar',
-        label: const Text('Incrementar'),
-        icon: const Icon(Icons.add),
       ),
     );
   }

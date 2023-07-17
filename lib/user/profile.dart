@@ -24,19 +24,29 @@ class _ProfileState extends State<Profile> {
       drawer: const DrawerApp(drawerValue: 2),
       body: Center(
           child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Text('DNI/NIF: ${_boxLogin.get('DNI')}'),
-          // ignore: prefer_adjacent_string_concatenation
-          Text('Nombre completo: ' +
-              '${_boxPatients.get(_boxLogin.get('DNI'))['Name']}'),
-          Text('Email: ${_boxPatients.get(_boxLogin.get('DNI'))['Email']}'),
+          const SizedBox(height: 150),
+          Text('DNI/NIF: ${_boxLogin.get('DNI')}',
+              style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 10),
+          Text(
+              // ignore: prefer_adjacent_string_concatenation
+              'Nombre completo: ' +
+                  '${_boxPatients.get(_boxLogin.get('DNI'))['Name']}',
+              style: const TextStyle(fontSize: 18)),
+          const SizedBox(height: 10),
+          Text(
+              // ignore: prefer_adjacent_string_concatenation
+              'Correo electrónico: ' +
+                  '${_boxPatients.get(_boxLogin.get('DNI'))['Email']}',
+              style: const TextStyle(fontSize: 18)),
         ],
       )),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => Navigator.pushNamed(context, '/updateProfile'),
-        tooltip: 'Press to update the data from this profile',
-        label: const Text('Update profile'),
+        tooltip: 'Presione para actualizar la información del perfil',
+        label: const Text('Actualizar perfil'),
         icon: const Icon(Icons.person),
       ),
     );

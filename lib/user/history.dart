@@ -28,7 +28,7 @@ class _HistoryState extends State<History> {
       for (index = 0; index < boxHistoryLength; index++) {
         if (_boxHistory.getAt(index)['dni'] == _boxLogin.get('DNI')) {
           _boxUserHistory.add(_boxHistory.getAt(index));
-          contenido.add('${_boxUserHistory.getAt(index)['contenido']}');
+          contenido.add('${_boxUserHistory.getAt(index)['path']}');
         }
       }
     }
@@ -38,7 +38,7 @@ class _HistoryState extends State<History> {
     int i;
     for (i = 0; i < _boxHistory.length - 1; i++) {
       if (_boxHistory.getAt(i)['dni'] == _boxLogin.get('DNI') &&
-          _boxHistory.getAt(i)['contenido'] == contenido[index]) {
+          _boxHistory.getAt(i)['path'] == contenido[index]) {
         _boxHistory.deleteAt(index);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext context) => super.widget));
@@ -65,9 +65,8 @@ class _HistoryState extends State<History> {
                         child: SizedBox(
                           width: 100,
                           height: 100,
-                          child: Image.file(File(
-                                  // ignore: lines_longer_than_80_chars
-                                  "${_boxUserHistory.getAt(index)['contenido']}"),
+                          child: Image.file(
+                              File("${_boxUserHistory.getAt(index)['path']}"),
                               fit: BoxFit.fitHeight),
                         )),
                     Expanded(
@@ -78,17 +77,17 @@ class _HistoryState extends State<History> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Fecha: ${_boxUserHistory.getAt(index)['fecha']}',
+                              'Fecha: ${_boxUserHistory.getAt(index)['date']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                             Text(
                               // ignore: lines_longer_than_80_chars
-                              'Resultado: ${_boxUserHistory.getAt(index)['resultado']}',
+                              'Resultado: ${_boxUserHistory.getAt(index)['result']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                             Text(
                               // ignore: lines_longer_than_80_chars
-                              'Precisión: ${(_boxUserHistory.getAt(index)['precision'] * 100).toStringAsFixed(2)}%',
+                              'Precisión: ${(_boxUserHistory.getAt(index)['accuracy'] * 100).toStringAsFixed(2)}%',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                           ],
@@ -100,9 +99,24 @@ class _HistoryState extends State<History> {
                       child: IconButton(
                         icon: const Icon(
                           Icons.delete,
-                          color: Colors.black,
+                          color: Colors.blueGrey,
                         ),
-                        onPressed: () => {_deleteResult(index)},
+                        onPressed: () => {
+                          _deleteResult(index),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              width: 240,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              content:
+                                  const Text('Elemento borrado correctamente'),
+                            ),
+                          )
+                        },
                       ),
                     ),
                   ],
@@ -110,10 +124,4 @@ class _HistoryState extends State<History> {
               );
             }));
   }
-
-  /*@override
-  void dispose() {
-    _boxUserHistory.clear();
-    super.dispose();
-  }*/
 }

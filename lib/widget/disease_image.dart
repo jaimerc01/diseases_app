@@ -22,6 +22,6 @@ class DiseaseImage extends StatelessWidget {
 
   Widget _emptyWidget() {
     return const Center(
-        child: Text('Seleccione una foto', style: kAnalyzingTextStyle));
+        child: Text('Seleccione una foto', style: analyzingTextStyle));
   }
 }

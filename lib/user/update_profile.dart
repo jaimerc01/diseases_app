@@ -28,10 +28,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
 
   @override
   void initState() {
+    super.initState();
     _controllerDni.text = _dni;
     _controllerName.text = _name;
     _controllerEmail.text = _email;
-    super.initState();
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -46,12 +46,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
             child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(children: [
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 50),
                   TextFormField(
                     controller: _controllerEmail,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'Correo electrónico',
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -62,10 +62,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter email.';
+                        return 'Introduzca el correo electrónico';
                       } else if (!(value.contains('@') &&
                           value.contains('.'))) {
-                        return 'Invalid email';
+                        return 'Correo electrónico no válido';
                       }
                       return null;
                     },
@@ -119,7 +119,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 behavior: SnackBarBehavior.floating,
-                                content: const Text('Updated Successfully'),
+                                content: const Text(
+                                    'Perfil actualizado correctamente'),
                               ),
                             );
 
@@ -128,7 +129,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                             Navigator.pushNamed(context, '/profile');
                           }
                         },
-                        child: const Text('Update'),
+                        child: const Text('Actualizar'),
                       ),
                     ],
                   ),

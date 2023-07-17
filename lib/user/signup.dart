@@ -40,15 +40,11 @@ class _SignupState extends State<Signup> {
             children: [
               const SizedBox(height: 100),
               Text(
-                'Register',
-                style: Theme.of(context).textTheme.headlineLarge,
+                'Cree su cuenta personal',
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 10),
-              Text(
-                'Create your account',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 35),
+              const SizedBox(height: 50),
               TextFormField(
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
@@ -64,13 +60,13 @@ class _SignupState extends State<Signup> {
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter DNI/NIE.';
+                    return 'Introduzca su DNI/NIE.';
                   } else if (value.length != 9) {
-                    return 'El tamaño no coincide con el de un DNI/NIE.';
+                    return 'El tamaño no coincide con el de un DNI/NIE';
                   } else if (!value.isValidDNI() && !value.isValidNIE()) {
-                    return 'Introduzca correctamente el DNI/NIE';
+                    return 'Introduzca correctamente su DNI/NIE';
                   } else if (_boxPatients.containsKey(value)) {
-                    return 'DNI/NIE is already registered.';
+                    return 'Su DNI/NIE ya está registrado';
                   }
 
                   return null;
@@ -83,7 +79,7 @@ class _SignupState extends State<Signup> {
                 focusNode: _focusNodeEmail,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: 'Email',
+                  labelText: 'Correo electrónico',
                   prefixIcon: const Icon(Icons.email_outlined),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -94,9 +90,9 @@ class _SignupState extends State<Signup> {
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter email.';
+                    return 'Introduzca su correo electrónico';
                   } else if (!(value.contains('@') && value.contains('.'))) {
-                    return 'Invalid email';
+                    return 'Correo electrónico no válido';
                   }
                   return null;
                 },
@@ -132,7 +128,7 @@ class _SignupState extends State<Signup> {
                 focusNode: _focusNodePassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'Contraseña',
                   prefixIcon: const Icon(Icons.password_outlined),
                   suffixIcon: IconButton(
                       onPressed: () {
@@ -152,9 +148,9 @@ class _SignupState extends State<Signup> {
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter password.';
+                    return 'Introduzca una contraseña';
                   } else if (value.length < 8) {
-                    return 'Password must be at least 8 character.';
+                    return 'La contraseña debe tener al menos 8 caracteres';
                   }
                   return null;
                 },
@@ -168,7 +164,7 @@ class _SignupState extends State<Signup> {
                 focusNode: _focusNodeConfirmPassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                  labelText: 'Confirm Password',
+                  labelText: 'Confirmar contraseña',
                   prefixIcon: const Icon(Icons.password_outlined),
                   suffixIcon: IconButton(
                       onPressed: () {
@@ -188,9 +184,9 @@ class _SignupState extends State<Signup> {
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter password.';
+                    return 'Introduzca su contraseña';
                   } else if (value != _controllerPassword.text) {
-                    return "Password doesn't match.";
+                    return 'La contraseña no coincide';
                   }
                   return null;
                 },
@@ -223,7 +219,7 @@ class _SignupState extends State<Signup> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             behavior: SnackBarBehavior.floating,
-                            content: const Text('Registered Successfully'),
+                            content: const Text('Registrado correctamente'),
                           ),
                         );
 
@@ -232,15 +228,15 @@ class _SignupState extends State<Signup> {
                         Navigator.pop(context);
                       }
                     },
-                    child: const Text('Register'),
+                    child: const Text('Registrarse'),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Already have an account?'),
+                      const Text('Ya tiene cuenta?'),
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Login'),
+                        child: const Text('Iniciar sesión'),
                       ),
                     ],
                   ),

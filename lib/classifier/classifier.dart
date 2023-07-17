@@ -8,16 +8,16 @@ import 'dart:math';
 typedef ClassifierLabels = List<String>;
 
 class Classifier {
-  final ClassifierLabels _labels;
-  final ClassifierModel _model;
+  final ClassifierLabels _classifierLabels;
+  final ClassifierModel _classifierModel;
 
   Classifier._({
     required ClassifierLabels labels,
     required ClassifierModel model,
-  })  : _labels = labels,
-        _model = model;
+  })  : _classifierLabels = labels,
+        _classifierModel = model;
 
-  static Future<Classifier?> loadWith({
+  static Future<Classifier?> loadClassifier({
     required String labelsFileName,
     required String modelFileName,
   }) async {
@@ -26,7 +26,7 @@ class Classifier {
       final model = await _loadModel(modelFileName);
       return Classifier._(labels: labels, model: model);
     } catch (e) {
-      debugPrint('Can\'t initialize Classifier: ${e.toString()}');
+      debugPrint('No se pudo cargar el clasificador: ${e.toString()}');
       if (e is Error) {
         debugPrintStack(stackTrace: e.stackTrace);
       }
@@ -35,30 +35,28 @@ class Classifier {
   }
 
   ClassifierCategory predict(Image image) {
-    // Load the image and convert it to TensorImage for TensorFlow Input
+    // Carga la imagen y la convierte a TensorImage para el TensorFlow Input
     final inputImage = _preProcessInput(image);
 
-    // Define the output buffer
+    // Define el buffer de salida
     final outputBuffer = TensorBuffer.createFixedSize(
-      _model.outputShape,
-      _model.outputType,
+      _classifierModel.outputShape,
+      _classifierModel.outputType,
     );
 
-    // Run inference
-    _model.interpreter.run(inputImage.buffer, outputBuffer.buffer);
+    // Realiza la deducción
+    _classifierModel.interpreter.run(inputImage.buffer, outputBuffer.buffer);
 
-    // Post Process the outputBuffer
+    // Obtiene el resultado
     final resultCategories = _postProcessOutput(outputBuffer);
     final topResult = resultCategories.first;
 
     return topResult;
   }
 
-  static Future<ClassifierLabels> _loadLabels(String labelsFileName) async {
-    // #1
-    final rawLabels = await FileUtil.loadLabels(labelsFileName);
+  static Future<ClassifierLabels> _loadLabels(String labelsFile) async {
+    final rawLabels = await FileUtil.loadLabels(labelsFile);
 
-    // #2
     final labels = rawLabels
         .map((label) => label.substring(label.indexOf(' ')).trim())
         .toList();
@@ -66,15 +64,12 @@ class Classifier {
     return labels;
   }
 
-  static Future<ClassifierModel> _loadModel(String modelFileName) async {
-    // #1
-    final interpreter = await Interpreter.fromAsset(modelFileName);
+  static Future<ClassifierModel> _loadModel(String modelFile) async {
+    final interpreter = await Interpreter.fromAsset(modelFile);
 
-    // #2
     final inputShape = interpreter.getInputTensor(0).shape;
     final outputShape = interpreter.getOutputTensor(0).shape;
 
-    // #3
     final inputType = interpreter.getInputTensor(0).type;
     final outputType = interpreter.getOutputTensor(0).type;
 
@@ -88,51 +83,39 @@ class Classifier {
   }
 
   TensorImage _preProcessInput(Image image) {
-    // #1
-    final inputTensor = TensorImage(_model.inputType);
+    final inputTensor = TensorImage(_classifierModel.inputType);
     inputTensor.loadImage(image);
 
-    // #2
-    final minLength = min(inputTensor.height, inputTensor.width);
-    final cropOp = ResizeWithCropOrPadOp(minLength, minLength);
+    final minSize = min(inputTensor.height, inputTensor.width);
+    final crop = ResizeWithCropOrPadOp(minSize, minSize);
 
-    // #3
-    final shapeLength = _model.inputShape[1];
-    final resizeOp = ResizeOp(shapeLength, shapeLength, ResizeMethod.BILINEAR);
+    final shapeSize = _classifierModel.inputShape[1];
+    final resize = ResizeOp(shapeSize, shapeSize, ResizeMethod.BILINEAR);
 
-    // #4
-    final normalizeOp = NormalizeOp(127.5, 127.5);
+    final normalize = NormalizeOp(127.5, 127.5);
 
-    // #5
-    final imageProcessor = ImageProcessorBuilder()
-        .add(cropOp)
-        .add(resizeOp)
-        .add(normalizeOp)
-        .build();
+    final imageProcessor =
+        ImageProcessorBuilder().add(crop).add(resize).add(normalize).build();
 
     imageProcessor.process(inputTensor);
 
-    // #6
     return inputTensor;
   }
 
   List<ClassifierCategory> _postProcessOutput(TensorBuffer outputBuffer) {
-    // #1
     final probabilityProcessor = TensorProcessorBuilder().build();
 
     probabilityProcessor.process(outputBuffer);
 
-    // #2
-    final labelledResult = TensorLabel.fromList(_labels, outputBuffer);
+    final labelledResult =
+        TensorLabel.fromList(_classifierLabels, outputBuffer);
 
-    // #3
     final categoryList = <ClassifierCategory>[];
     labelledResult.getMapWithFloatValue().forEach((key, value) {
       final category = ClassifierCategory(key, value);
       categoryList.add(category);
     });
 
-    // #4
     categoryList.sort((a, b) => (b.score > a.score ? 1 : -1));
 
     return categoryList;
@@ -144,11 +127,6 @@ class ClassifierCategory {
   final double score;
 
   ClassifierCategory(this.label, this.score);
-
-  @override
-  String toString() {
-    return 'Category{label: $label, score: $score}';
-  }
 }
 
 class ClassifierModel {

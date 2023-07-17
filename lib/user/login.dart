@@ -39,20 +39,16 @@ class _LoginState extends State<Login> {
             children: [
               const SizedBox(height: 150),
               Text(
-                'Welcome back',
-                style: Theme.of(context).textTheme.headlineLarge,
+                'Inicie sesión en su cuenta',
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 10),
-              Text(
-                'Login to your account',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 100),
               TextFormField(
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  labelText: 'DNI',
+                  labelText: 'DNI/NIF',
                   prefixIcon: const Icon(Icons.credit_card),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -64,9 +60,9 @@ class _LoginState extends State<Login> {
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter DNI/NIF.';
+                    return 'Introduzca su DNI/NIF';
                   } else if (!_boxPatients.containsKey(value)) {
-                    return 'DNI/NIF is not registered.';
+                    return 'Su DNI/NIF no está registrado';
                   }
 
                   return null;
@@ -79,7 +75,7 @@ class _LoginState extends State<Login> {
                 obscureText: _obscurePassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                  labelText: 'Password',
+                  labelText: 'Contraseña',
                   prefixIcon: const Icon(Icons.password_outlined),
                   suffixIcon: IconButton(
                       onPressed: () {
@@ -98,15 +94,12 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 validator: (String? value) {
-                  try {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter password.';
-                    } else if (value !=
-                        _boxPatients.get(_controllerDni.text)['Password']) {
-                      return 'Wrong password.';
-                    }
-                  } on NoSuchMethodError {
-                    debugPrint('Búsqueda de DNI/NIF');
+                  if (value == null || value.isEmpty) {
+                    return 'Introduzca la contraseña';
+                  } else if (_boxPatients.containsKey(_controllerDni.text) &&
+                      value !=
+                          _boxPatients.get(_controllerDni.text)['Password']) {
+                    return 'Contraseña incorrecta';
                   }
 
                   return null;
@@ -127,22 +120,22 @@ class _LoginState extends State<Login> {
                         _boxLogin.put('loginStatus', true);
                         _boxLogin.put('DNI', _controllerDni.text);
 
-                        Navigator.pushNamed(context, '/dashboard');
+                        Navigator.pushNamed(context, '/');
                       }
                     },
-                    child: const Text('Login'),
+                    child: const Text('Iniciar sesión'),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account?"),
+                      const Text('No tienes cuenta?'),
                       TextButton(
                         onPressed: () {
                           _formKey.currentState?.reset();
 
                           Navigator.pushNamed(context, '/signup');
                         },
-                        child: const Text('Signup'),
+                        child: const Text('Registrarse'),
                       ),
                     ],
                   ),

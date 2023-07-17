@@ -29,16 +29,14 @@ enum _ResultStatus {
 }
 
 class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
-  bool _isAnalyzing = false;
+  bool _analyzing = false;
+  File? _imageFile;
   final picker = ImagePicker();
-  File? _selectedImageFile;
   final double _bigSize = 250;
   final _boxHistory = Hive.box('history');
   final _boxLogin = Hive.box('login');
-
-  // Result
-  _ResultStatus _resultStatus = _ResultStatus.notStarted;
   String _diseaseLabel = '';
+  _ResultStatus _resultStatus = _ResultStatus.notStarted;
   double _accuracy = 0.0;
 
   late Classifier? _classifier;
@@ -50,76 +48,44 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   }
 
   Future<void> _loadClassifier() async {
-    final classifier = await Classifier.loadWith(
+    final classifier = await Classifier.loadClassifier(
       labelsFileName: _labelsFileName,
       modelFileName: _modelFileName,
     );
     _classifier = classifier;
   }
 
-  Widget _buildImageView() {
-    return Stack(
-      alignment: AlignmentDirectional.center,
-      children: [
-        DiseaseImage(file: _selectedImageFile, size: _bigSize),
-        _buildAnalyzingText(),
-      ],
-    );
-  }
-
   Widget _buildAnalyzingText() {
-    if (!_isAnalyzing) {
+    if (!_analyzing) {
       return const SizedBox.shrink();
     }
-    return const Text('Analyzing...', style: kAnalyzingTextStyle);
+    return const Text('Analizando...', style: analyzingTextStyle);
   }
 
   Widget _buildTitle() {
     return const Text(
-      'Disease Recogniser',
-      style: kTitleTextStyle,
+      'Clasificador de enfermedades',
+      style: titleTextStyle,
       textAlign: TextAlign.center,
     );
   }
 
-  Widget _buildPickPhotoButton({
-    required ImageSource source,
-    required String title,
-  }) {
-    return TextButton(
-      onPressed: () => _onPickImage(source),
-      child: Container(
-        width: 300,
-        height: 50,
-        color: kColorBrown,
-        child: Center(
-            child: Text(title,
-                style: const TextStyle(
-                  fontFamily: kButtonFont,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w600,
-                  color: kColorLightYellow,
-                ))),
-      ),
-    );
-  }
-
-  void _setAnalyzing(bool flag) {
+  void _setAnalyzing(bool value) {
     setState(() {
-      _isAnalyzing = flag;
+      _analyzing = value;
     });
   }
 
   void _onPickImage(ImageSource source) async {
-    final pickedFile = await picker.pickImage(source: source);
+    final pickedImage = await picker.pickImage(source: source);
 
-    if (pickedFile == null) {
+    if (pickedImage == null) {
       return;
     }
 
-    final imageFile = File(pickedFile.path);
+    final imageFile = File(pickedImage.path);
     setState(() {
-      _selectedImageFile = imageFile;
+      _imageFile = imageFile;
     });
 
     _analyzeImage(imageFile);
@@ -132,11 +98,11 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
 
     final resultCategory = _classifier!.predict(imageInput);
 
+    final diseaseLabel = resultCategory.label;
+    final accuracy = resultCategory.score;
     final result = resultCategory.score >= 0.8
         ? _ResultStatus.found
         : _ResultStatus.notFound;
-    final diseaseLabel = resultCategory.label;
-    final accuracy = resultCategory.score;
 
     _setAnalyzing(false);
 
@@ -151,12 +117,12 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     final now = DateTime.now();
     final formatter = DateFormat('dd-MM-yyyy');
     final formattedDate = formatter.format(now);
-    _boxHistory.put(_selectedImageFile.toString(), {
+    _boxHistory.put(_imageFile.toString(), {
       'dni': '${_boxLogin.get('DNI')}',
-      'contenido': _selectedImageFile?.path,
-      'fecha': formattedDate,
-      'resultado': _diseaseLabel,
-      'precision': _accuracy,
+      'path': _imageFile?.path,
+      'date': formattedDate,
+      'result': _diseaseLabel,
+      'accuracy': _accuracy,
     });
   }
 
@@ -164,7 +130,7 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     var title = '';
 
     if (_resultStatus == _ResultStatus.notFound) {
-      title = 'Fail to recognise';
+      title = 'No se ha reconocido';
     } else if (_resultStatus == _ResultStatus.found) {
       title = _diseaseLabel;
     } else {
@@ -173,16 +139,16 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
 
     var accuracyLabel = '';
     if (_resultStatus == _ResultStatus.found) {
-      accuracyLabel = 'Accuracy: ${(_accuracy * 100).toStringAsFixed(2)}%';
+      accuracyLabel = 'Precisión: ${(_accuracy * 100).toStringAsFixed(2)}%';
     }
 
     _storeInHistory();
 
     return Column(
       children: [
-        Text(title, style: kResultTextStyle),
+        Text(title, style: resultTextStyle),
         const SizedBox(height: 10),
-        Text(accuracyLabel, style: kResultRatingTextStyle)
+        Text(accuracyLabel, style: accuracyTextStyle)
       ],
     );
   }
@@ -192,28 +158,41 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     return Scaffold(
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 1),
-        backgroundColor: kBgColor,
+        backgroundColor: darkGreen,
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
               const Spacer(),
               Padding(
-                padding: const EdgeInsets.only(top: 30),
+                padding: const EdgeInsets.only(top: 35),
                 child: _buildTitle(),
               ),
               const SizedBox(height: 20),
-              _buildImageView(),
+              Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  DiseaseImage(file: _imageFile, size: _bigSize),
+                  _buildAnalyzingText(),
+                ],
+              ),
               const SizedBox(height: 10),
               _buildResultView(),
-              const Spacer(flex: 5),
-              /*_buildPickPhotoButton(
-                title: 'Take a photo',
-                source: ImageSource.camera,
-              ),*/
-              _buildPickPhotoButton(
-                title: 'Pick from gallery',
-                source: ImageSource.gallery,
+              const Spacer(flex: 4),
+              TextButton(
+                onPressed: () => _onPickImage(ImageSource.gallery),
+                child: Container(
+                  width: 270,
+                  height: 50,
+                  color: brown,
+                  child: const Center(
+                      child: Text('Abrir galería',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600,
+                            color: cream,
+                          ))),
+                ),
               ),
               const Spacer(),
             ],
