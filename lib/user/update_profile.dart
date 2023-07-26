@@ -15,23 +15,42 @@ class UpdateProfile extends StatefulWidget {
 class _UpdateProfileState extends State<UpdateProfile> {
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
-  late final String _dni = '${_boxLogin.get('DNI')}';
-  late final String _name = '${_boxPatients.get(_boxLogin.get('DNI'))['Name']}';
-  late final String _email =
-      '${_boxPatients.get(_boxLogin.get('DNI'))['Email']}';
-  late final String _password =
-      '${_boxPatients.get(_boxLogin.get('DNI'))['Password']}';
+  //final _boxAdmins = Hive.box('admins');
+
+  late final String _dni = '${_boxLogin.get('dni')}';
+  late final String _patientName =
+      '${_boxPatients.get(_boxLogin.get('dni'))['name']}';
+  late final String _patientEmail =
+      '${_boxPatients.get(_boxLogin.get('dni'))['email']}';
+  late final String _patientPassword =
+      '${_boxPatients.get(_boxLogin.get('dni'))['password']}';
+
+  /*late final String _adminName =
+      '${_boxAdmins.get(_boxLogin.get('dni'))['name']}';
+  late final String _adminEmail =
+      '${_boxPatients.get(_boxAdmins.get('dni'))['email']}';
+  late final String _adminPassword =
+      '${_boxPatients.get(_boxAdmins.get('dni'))['password']}';*/
 
   final TextEditingController _controllerDni = TextEditingController();
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
 
+  void _initUser() {
+    _controllerDni.text = _dni;
+    //if (!_boxAdmins.containsKey(_boxLogin.get('dni'))) {
+    _controllerName.text = _patientName;
+    _controllerEmail.text = _patientEmail;
+    /*} else {
+      _controllerName.text = _adminName;
+      _controllerEmail.text = _adminPassword;
+    }*/
+  }
+
   @override
   void initState() {
     super.initState();
-    _controllerDni.text = _dni;
-    _controllerName.text = _name;
-    _controllerEmail.text = _email;
+    _initUser();
   }
 
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -103,12 +122,21 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
+                            //if(!_boxAdmins.containsKey(_boxLogin.get('dni'))){
                             _boxPatients.put(_controllerDni.text, {
-                              'DNI': _controllerDni.text,
-                              'Password': _password,
-                              'Email': _controllerEmail.text,
-                              'Name': _controllerName.text,
+                              'dni': _controllerDni.text,
+                              'password': _patientPassword,
+                              'email': _controllerEmail.text,
+                              'name': _controllerName.text,
                             });
+                            /*} else {
+                              _boxAdmins.put(_controllerDni.text, {
+                                'dni': _controllerDni.text,
+                                'password': _patientPassword,
+                                'email': _controllerEmail.text,
+                                'name': _controllerName.text,
+                              });
+                            }*/
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

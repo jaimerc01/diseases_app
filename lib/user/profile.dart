@@ -16,6 +16,83 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
+  final _boxAdmins = Hive.box('admins');
+  final _boxDoctors = Hive.box('doctors');
+
+  List<Widget> _checkUser() {
+    if (_boxPatients.containsKey(_boxLogin.get('dni'))) {
+      return <Widget>[
+        const SizedBox(height: 150),
+        Text('DNI/NIF: ${_boxLogin.get('dni')}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 10),
+        Text(
+            // ignore: prefer_adjacent_string_concatenation
+            'Nombre completo: ' +
+                '${_boxPatients.get(_boxLogin.get('dni'))['name']}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 10),
+        Text(
+            // ignore: prefer_adjacent_string_concatenation
+            'Correo electrónico: ' +
+                '${_boxPatients.get(_boxLogin.get('dni'))['email']}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 50),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size.fromHeight(50),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          onPressed: () => Navigator.pushNamed(context, '/updateProfile'),
+          child: const Text('Actualizar datos'),
+        ),
+      ];
+    } else if (_boxAdmins.containsKey(_boxLogin.get('dni'))) {
+      return <Widget>[
+        const SizedBox(height: 150),
+        Text('DNI/NIF: ${_boxLogin.get('dni')}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 10),
+        Text(
+            // ignore: prefer_adjacent_string_concatenation
+            'Nombre completo: ' +
+                '${_boxAdmins.get(_boxLogin.get('dni'))['name']}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 10),
+        Text(
+            // ignore: prefer_adjacent_string_concatenation
+            'Correo electrónico: ' +
+                '${_boxAdmins.get(_boxLogin.get('dni'))['email']}',
+            style: const TextStyle(fontSize: 18)),
+      ];
+    } else {
+      return <Widget>[
+        const SizedBox(height: 150),
+        Text('DNI/NIF: ${_boxLogin.get('dni')}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 10),
+        Text(
+            // ignore: prefer_adjacent_string_concatenation
+            'Número de colegiado: ' +
+                '${_boxDoctors.get(_boxLogin.get('dni'))['collegiateNumber']}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 10),
+        Text(
+            // ignore: prefer_adjacent_string_concatenation
+            'Nombre completo: ' +
+                '${_boxDoctors.get(_boxLogin.get('dni'))['name']}',
+            style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 10),
+        Text(
+            // ignore: prefer_adjacent_string_concatenation
+            'Correo electrónico: ' +
+                '${_boxDoctors.get(_boxLogin.get('dni'))['email']}',
+            style: const TextStyle(fontSize: 18)),
+      ];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,30 +102,8 @@ class _ProfileState extends State<Profile> {
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 150),
-          Text('DNI/NIF: ${_boxLogin.get('DNI')}',
-              style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 10),
-          Text(
-              // ignore: prefer_adjacent_string_concatenation
-              'Nombre completo: ' +
-                  '${_boxPatients.get(_boxLogin.get('DNI'))['Name']}',
-              style: const TextStyle(fontSize: 18)),
-          const SizedBox(height: 10),
-          Text(
-              // ignore: prefer_adjacent_string_concatenation
-              'Correo electrónico: ' +
-                  '${_boxPatients.get(_boxLogin.get('DNI'))['Email']}',
-              style: const TextStyle(fontSize: 18)),
-        ],
+        children: _checkUser(),
       )),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.pushNamed(context, '/updateProfile'),
-        tooltip: 'Presione para actualizar la información del perfil',
-        label: const Text('Actualizar perfil'),
-        icon: const Icon(Icons.person),
-      ),
     );
   }
 }

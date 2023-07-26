@@ -1,24 +1,29 @@
 import 'package:dni_nie_validator/dni_nie_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../widget/drawer_app.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class AddDoctor extends StatefulWidget {
+  final String? title;
+  const AddDoctor({super.key, required this.title});
 
-  static const routeName = '/signup';
+  static const routeName = '/addDoctor';
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<AddDoctor> createState() => _AddDoctorState();
 }
 
-class _SignupState extends State<Signup> {
+class _AddDoctorState extends State<AddDoctor> {
   final GlobalKey<FormState> _formKey = GlobalKey();
 
+  final FocusNode _focusNodeCollegiateNumber = FocusNode();
   final FocusNode _focusNodeEmail = FocusNode();
   final FocusNode _focusNodeNombre = FocusNode();
   final FocusNode _focusNodePassword = FocusNode();
   final FocusNode _focusNodeConfirmPassword = FocusNode();
   final TextEditingController _controllerDni = TextEditingController();
+  final TextEditingController _controllerCollegiateNumber =
+      TextEditingController();
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
@@ -26,11 +31,15 @@ class _SignupState extends State<Signup> {
       TextEditingController();
 
   final _boxPatients = Hive.box('patients');
+  final _boxAdmins = Hive.box('admins');
+  final _boxDoctors = Hive.box('doctors');
   bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text(widget.title!)),
+      drawer: const DrawerApp(drawerValue: 4),
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Form(
         key: _formKey,
@@ -38,12 +47,6 @@ class _SignupState extends State<Signup> {
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: Column(
             children: [
-              const SizedBox(height: 100),
-              Text(
-                'Cree su cuenta personal',
-                style: Theme.of(context).textTheme.headlineMedium,
-                textAlign: TextAlign.center,
-              ),
               const SizedBox(height: 50),
               TextFormField(
                 controller: _controllerDni,
@@ -65,8 +68,44 @@ class _SignupState extends State<Signup> {
                     return 'El tamaño no coincide con el de un DNI/NIE';
                   } else if (!value.isValidDNI() && !value.isValidNIE()) {
                     return 'Introduzca correctamente su DNI/NIE';
-                  } else if (_boxPatients.containsKey(value)) {
+                  } else if (_boxPatients.containsKey(value) ||
+                      _boxAdmins.containsKey(value) ||
+                      _boxDoctors.containsKey(value)) {
                     return 'Su DNI/NIE ya está registrado';
+                  }
+
+                  return null;
+                },
+                onEditingComplete: () =>
+                    _focusNodeCollegiateNumber.requestFocus(),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
+                controller: _controllerCollegiateNumber,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'Número de colegiado',
+                  prefixIcon: const Icon(Icons.credit_card),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Introduzca su número de colegiado.';
+                  } else if (value.length != 9) {
+                    // ignore: lines_longer_than_80_chars
+                    return 'El tamaño no coincide con el de un número de colegiado';
+                  } else {
+                    for (var index = 0; _boxDoctors.length > index; index++) {
+                      if (_boxDoctors.getAt(index)['collegiateNumber'] ==
+                          value) {
+                        return 'Su número de colegiado ya está registrado';
+                      }
+                    }
                   }
 
                   return null;
@@ -203,11 +242,12 @@ class _SignupState extends State<Signup> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
-                        _boxPatients.put(_controllerDni.text, {
-                          'DNI': _controllerDni.text,
-                          'Password': _controllerConFirmPassword.text,
-                          'Email': _controllerEmail.text,
-                          'Name': _controllerName.text,
+                        _boxDoctors.put(_controllerDni.text, {
+                          'dni': _controllerDni.text,
+                          'collegiateNumber': _controllerCollegiateNumber.text,
+                          'password': _controllerConFirmPassword.text,
+                          'email': _controllerEmail.text,
+                          'name': _controllerName.text,
                         });
 
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -225,20 +265,10 @@ class _SignupState extends State<Signup> {
 
                         _formKey.currentState?.reset();
 
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/doctors');
                       }
                     },
-                    child: const Text('Registrarse'),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Ya tiene cuenta?'),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Iniciar sesión'),
-                      ),
-                    ],
+                    child: const Text('Añadir médico'),
                   ),
                 ],
               ),
@@ -251,11 +281,13 @@ class _SignupState extends State<Signup> {
 
   @override
   void dispose() {
+    _focusNodeCollegiateNumber.dispose();
     _focusNodeEmail.dispose();
     _focusNodeNombre.dispose();
     _focusNodePassword.dispose();
     _focusNodeConfirmPassword.dispose();
     _controllerDni.dispose();
+    _controllerCollegiateNumber.dispose();
     _controllerEmail.dispose();
     _controllerPassword.dispose();
     _controllerName.dispose();

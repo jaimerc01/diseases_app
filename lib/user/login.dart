@@ -21,6 +21,8 @@ class _LoginState extends State<Login> {
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
   final _boxUserHistory = Hive.box('userHistory');
+  final _boxAdmins = Hive.box('admins');
+  final _boxDoctors = Hive.box('doctors');
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,9 @@ class _LoginState extends State<Login> {
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Introduzca su DNI/NIF';
-                  } else if (!_boxPatients.containsKey(value)) {
+                  } else if (!_boxPatients.containsKey(value) &&
+                      !_boxAdmins.containsKey(value) &&
+                      !_boxDoctors.containsKey(value)) {
                     return 'Su DNI/NIF no está registrado';
                   }
 
@@ -98,7 +102,15 @@ class _LoginState extends State<Login> {
                     return 'Introduzca la contraseña';
                   } else if (_boxPatients.containsKey(_controllerDni.text) &&
                       value !=
-                          _boxPatients.get(_controllerDni.text)['Password']) {
+                          _boxPatients.get(_controllerDni.text)['password']) {
+                    return 'Contraseña incorrecta';
+                  } else if (_boxAdmins.containsKey(_controllerDni.text) &&
+                      value !=
+                          _boxAdmins.get(_controllerDni.text)['password']) {
+                    return 'Contraseña incorrecta';
+                  } else if (_boxDoctors.containsKey(_controllerDni.text) &&
+                      value !=
+                          _boxDoctors.get(_controllerDni.text)['password']) {
                     return 'Contraseña incorrecta';
                   }
 
@@ -118,7 +130,7 @@ class _LoginState extends State<Login> {
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
                         _boxLogin.put('loginStatus', true);
-                        _boxLogin.put('DNI', _controllerDni.text);
+                        _boxLogin.put('dni', _controllerDni.text);
 
                         Navigator.pushNamed(context, '/');
                       }

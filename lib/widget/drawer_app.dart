@@ -11,12 +11,12 @@ class DrawerApp extends StatefulWidget {
 
 class _DrawerAppState extends State<DrawerApp> {
   final _boxLogin = Hive.box('login');
+  final _boxPatients = Hive.box('patients');
+  final _boxAdmins = Hive.box('admins');
 
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-        child: ListView(
-      children: <Widget>[
+  List<Widget> _checkUser() {
+    if (_boxPatients.containsKey(_boxLogin.get('dni'))) {
+      return <Widget>[
         ListTile(
           title: const Text('Inicio'),
           selected: (0 == widget.drawerValue),
@@ -48,12 +48,77 @@ class _DrawerAppState extends State<DrawerApp> {
         ListTile(
           title: const Text('Cerrar sesión'),
           onTap: () {
-            _boxLogin.delete(_boxLogin.get('DNI'));
+            _boxLogin.delete(_boxLogin.get('dni'));
             _boxLogin.put('loginStatus', false);
             Navigator.pushNamed(context, '/login');
           },
         ),
-      ],
+      ];
+    } else if (_boxAdmins.containsKey(_boxLogin.get('dni'))) {
+      return <Widget>[
+        ListTile(
+          title: const Text('Inicio'),
+          selected: (0 == widget.drawerValue),
+          onTap: () {
+            Navigator.pushNamed(context, '/');
+          },
+        ),
+        ListTile(
+          title: const Text('Perfil'),
+          selected: (2 == widget.drawerValue),
+          onTap: () {
+            Navigator.pushNamed(context, '/profile');
+          },
+        ),
+        ListTile(
+          title: const Text('Consultar doctores'),
+          selected: (4 == widget.drawerValue),
+          onTap: () {
+            Navigator.pushNamed(context, '/doctors');
+          },
+        ),
+        ListTile(
+          title: const Text('Cerrar sesión'),
+          onTap: () {
+            _boxLogin.delete(_boxLogin.get('dni'));
+            _boxLogin.put('loginStatus', false);
+            Navigator.pushNamed(context, '/login');
+          },
+        ),
+      ];
+    } else {
+      return <Widget>[
+        ListTile(
+          title: const Text('Inicio'),
+          selected: (0 == widget.drawerValue),
+          onTap: () {
+            Navigator.pushNamed(context, '/');
+          },
+        ),
+        ListTile(
+          title: const Text('Perfil'),
+          selected: (2 == widget.drawerValue),
+          onTap: () {
+            Navigator.pushNamed(context, '/profile');
+          },
+        ),
+        ListTile(
+          title: const Text('Cerrar sesión'),
+          onTap: () {
+            _boxLogin.delete(_boxLogin.get('dni'));
+            _boxLogin.put('loginStatus', false);
+            Navigator.pushNamed(context, '/login');
+          },
+        ),
+      ];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+        child: ListView(
+      children: _checkUser(),
     ));
   }
 }

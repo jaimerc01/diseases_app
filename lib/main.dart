@@ -3,13 +3,15 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'widget/dashboard.dart';
 import 'user/login.dart';
-import 'user/signup.dart';
+import 'patient/signup.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'widget/disease_recogniser.dart';
 import 'user/profile.dart';
 import 'user/update_profile.dart';
 import 'user/history.dart';
+import 'admin/check_doctors.dart';
+import 'admin/add_doctor.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +44,10 @@ class MyApp extends StatelessWidget {
           UpdateProfile.routeName: (context) =>
               const UpdateProfile(title: 'Actualizar perfil'),
           History.routeName: (context) => const History(title: 'Historial'),
+          CheckDoctors.routeName: (context) =>
+              const CheckDoctors(title: 'Lista de doctores'),
+          AddDoctor.routeName: (context) =>
+              const AddDoctor(title: 'Añadir doctor'),
         });
   }
 }
@@ -71,4 +77,21 @@ Future<void> _initHive() async {
   await Hive.openBox('history', encryptionCipher: encryptionCipher);
   await Hive.openBox('userHistory', encryptionCipher: encryptionCipher);
   await Hive.openBox('login', encryptionCipher: encryptionCipher);
+
+  final adminBox = Hive.box('admins');
+  await adminBox.put('00000000T', {
+    'dni': '00000000T',
+    'password': '12345678',
+    'email': 'admin@admin.com',
+    'name': 'Admin',
+  });
+
+  /*final doctorBox = Hive.box('doctors');
+  await doctorBox.put('62995487M', {
+    'dni': '62995487M',
+    'collegiateNumber': '283499999',
+    'password': '12345678',
+    'email': 'doctor@doctor.com',
+    'name': 'Doctor Doctor',
+  });*/
 }

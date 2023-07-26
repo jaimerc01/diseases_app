@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import '../classifier/classifier.dart';
+import '../patient/classifier.dart';
 import '../styles.dart';
 import 'disease_image.dart';
 import 'drawer_app.dart';
@@ -118,7 +118,7 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     final formatter = DateFormat('dd-MM-yyyy');
     final formattedDate = formatter.format(now);
     _boxHistory.put(_imageFile.toString(), {
-      'dni': '${_boxLogin.get('DNI')}',
+      'dni': '${_boxLogin.get('dni')}',
       'path': _imageFile?.path,
       'date': formattedDate,
       'result': _diseaseLabel,
