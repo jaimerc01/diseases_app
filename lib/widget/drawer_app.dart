@@ -103,6 +103,13 @@ class _DrawerAppState extends State<DrawerApp> {
           },
         ),
         ListTile(
+          title: const Text('Consultar pacientes'),
+          selected: (5 == widget.drawerValue),
+          onTap: () {
+            Navigator.pushNamed(context, '/patients');
+          },
+        ),
+        ListTile(
           title: const Text('Cerrar sesión'),
           onTap: () {
             _boxLogin.delete(_boxLogin.get('dni'));

@@ -212,6 +212,7 @@ class _SignupState extends State<Signup> {
                           'password': _controllerConFirmPassword.text,
                           'email': _controllerEmail.text,
                           'name': _controllerName.text,
+                          'doctor': '0',
                         });
 
                         ScaffoldMessenger.of(context).showSnackBar(

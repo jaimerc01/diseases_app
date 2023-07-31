@@ -128,6 +128,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                               'password': _patientPassword,
                               'email': _controllerEmail.text,
                               'name': _controllerName.text,
+                              'doctor:': '0',
                             });
                             /*} else {
                               _boxAdmins.put(_controllerDni.text, {

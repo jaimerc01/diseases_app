@@ -20,13 +20,13 @@ class _LoginState extends State<Login> {
   bool _obscurePassword = true;
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
-  final _boxUserHistory = Hive.box('userHistory');
+  final _boxPatientHistory = Hive.box('patientHistory');
   final _boxAdmins = Hive.box('admins');
   final _boxDoctors = Hive.box('doctors');
 
   @override
   Widget build(BuildContext context) {
-    _boxUserHistory.clear();
+    _boxPatientHistory.clear();
     /*if (_boxLogin.get('loginStatus') == false) {
       Navigator.pushNamed(context, '/dashboard');
     }*/

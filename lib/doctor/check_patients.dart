@@ -1,45 +1,61 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../widget/drawer_app.dart';
 
-class History extends StatefulWidget {
+class CheckPatients extends StatefulWidget {
   final String? title;
-  const History({super.key, required this.title});
+  const CheckPatients({super.key, required this.title});
 
-  static const routeName = '/history';
+  static const routeName = '/patients';
 
   @override
-  State<History> createState() => _HistoryState();
+  State<CheckPatients> createState() => _CheckPatientsState();
 }
 
-class _HistoryState extends State<History> {
+class _CheckPatientsState extends State<CheckPatients> {
   final _boxLogin = Hive.box('login');
-  final _boxHistory = Hive.box('history');
-  final _boxUserHistory = Hive.box('userHistory');
+  final _boxPatients = Hive.box('patients');
+  final _box = Hive.box('doctorPatients');
   List<String> contenido = [];
 
-  void _checkUserHistory() {
+  void _checkPatients() {
     int index;
-    final boxHistoryLength = _boxHistory.length - 1;
 
-    if (boxHistoryLength >= 0) {
-      _boxUserHistory.clear();
-      for (index = 0; index < boxHistoryLength; index++) {
-        if (_boxHistory.getAt(index)['dni'] == _boxLogin.get('dni')) {
-          _boxUserHistory.add(_boxHistory.getAt(index));
-          contenido.add('${_boxUserHistory.getAt(index)['path']}');
-        }
+    _box.clear();
+    for (index = 0; index < _boxPatients.length; index++) {
+      if (_boxLogin.get('dni') == _boxPatients.getAt(index)['doctor']) {
+        _box.add(_boxPatients.getAt(index));
+        contenido.add('${_boxPatients.getAt(index)['dni']}');
       }
     }
   }
 
-  void _deleteResult(int index) {
+  void checkHistory(int index) {
     int i;
-    for (i = 0; i < _boxHistory.length - 1; i++) {
-      if (_boxHistory.getAt(i)['dni'] == _boxLogin.get('dni') &&
-          _boxHistory.getAt(i)['path'] == contenido[index]) {
-        _boxHistory.deleteAt(index);
+    for (i = 0; i < _boxPatients.length; i++) {
+      if (_boxPatients.getAt(i)['dni'] == contenido[index]) {
+        Navigator.pushNamed(
+          context,
+          '/history',
+          arguments: <String>{
+            (contenido[index]),
+          },
+        );
+      }
+    }
+  }
+
+  void _unassignPatient(int index) {
+    int i;
+    for (i = 0; i < _boxPatients.length; i++) {
+      if (_boxPatients.getAt(i)['dni'] == contenido[index]) {
+        _boxPatients.put(contenido[index], {
+          'dni': contenido[index],
+          'password': _boxPatients.getAt(i)['password'],
+          'email': _boxPatients.getAt(i)['email'],
+          'name': _boxPatients.getAt(i)['name'],
+          'doctor': '0',
+        });
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext context) => super.widget));
       }
@@ -48,27 +64,18 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    _checkUserHistory();
+    _checkPatients();
     return Scaffold(
         appBar: AppBar(title: Text(widget.title!)),
-        drawer: const DrawerApp(drawerValue: 3),
+        drawer: const DrawerApp(drawerValue: 5),
         body: ListView.builder(
-            itemCount: _boxUserHistory.length,
+            itemCount: _box.length,
             itemBuilder: (BuildContext context, int index) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Image.file(
-                              File("${_boxUserHistory.getAt(index)['path']}"),
-                              fit: BoxFit.fitHeight),
-                        )),
                     Expanded(
                       flex: 2,
                       child: Padding(
@@ -77,17 +84,16 @@ class _HistoryState extends State<History> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'Fecha: ${_boxUserHistory.getAt(index)['date']}',
+                              'DNI/NIF: ${_box.getAt(index)['dni']}',
+                              style: const TextStyle(fontSize: 17.0),
+                            ),
+                            Text(
+                              'Nombre completo: ${_box.getAt(index)['name']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                             Text(
                               // ignore: lines_longer_than_80_chars
-                              'Resultado: ${_boxUserHistory.getAt(index)['result']}',
-                              style: const TextStyle(fontSize: 17.0),
-                            ),
-                            Text(
-                              // ignore: lines_longer_than_80_chars
-                              'Precisión: ${(_boxUserHistory.getAt(index)['accuracy'] * 100).toStringAsFixed(2)}%',
+                              'Correo electrónico: ${_box.getAt(index)['email']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                           ],
@@ -98,11 +104,23 @@ class _HistoryState extends State<History> {
                       flex: 1,
                       child: IconButton(
                         icon: const Icon(
+                          Icons.view_list,
+                          color: Colors.blueGrey,
+                        ),
+                        onPressed: () => {
+                          checkHistory(index),
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        icon: const Icon(
                           Icons.delete,
                           color: Colors.blueGrey,
                         ),
                         onPressed: () => {
-                          _deleteResult(index),
+                          _unassignPatient(index),
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               width: 240,
@@ -112,8 +130,7 @@ class _HistoryState extends State<History> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               behavior: SnackBarBehavior.floating,
-                              content:
-                                  const Text('Elemento borrado correctamente'),
+                              content: const Text('Paciente desasignado'),
                             ),
                           )
                         },
@@ -122,6 +139,12 @@ class _HistoryState extends State<History> {
                   ],
                 ),
               );
-            }));
+            }),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => Navigator.pushNamed(context, '/assignPatient'),
+          tooltip: 'Presione para asingar un paciente',
+          label: const Text('Asignar paciente'),
+          icon: const Icon(Icons.add),
+        ));
   }
 }

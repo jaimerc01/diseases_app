@@ -9,9 +9,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'widget/disease_recogniser.dart';
 import 'user/profile.dart';
 import 'user/update_profile.dart';
-import 'user/history.dart';
+import 'patient/history.dart';
 import 'admin/check_doctors.dart';
 import 'admin/add_doctor.dart';
+import 'doctor/check_patients.dart';
+import 'doctor/assign_patients.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +50,10 @@ class MyApp extends StatelessWidget {
               const CheckDoctors(title: 'Lista de doctores'),
           AddDoctor.routeName: (context) =>
               const AddDoctor(title: 'Añadir doctor'),
+          CheckPatients.routeName: (context) =>
+              const CheckPatients(title: 'Consultar pacientes'),
+          AssingPatient.routeName: (context) =>
+              const AssingPatient(title: 'Asignar paciente'),
         });
   }
 }
@@ -75,8 +81,9 @@ Future<void> _initHive() async {
   await Hive.openBox('admins', encryptionCipher: encryptionCipher);
   await Hive.openBox('doctors', encryptionCipher: encryptionCipher);
   await Hive.openBox('history', encryptionCipher: encryptionCipher);
-  await Hive.openBox('userHistory', encryptionCipher: encryptionCipher);
+  await Hive.openBox('patientHistory', encryptionCipher: encryptionCipher);
   await Hive.openBox('login', encryptionCipher: encryptionCipher);
+  await Hive.openBox('doctorPatients', encryptionCipher: encryptionCipher);
 
   final adminBox = Hive.box('admins');
   await adminBox.put('00000000T', {
@@ -86,12 +93,35 @@ Future<void> _initHive() async {
     'name': 'Admin',
   });
 
-  /*final doctorBox = Hive.box('doctors');
-  await doctorBox.put('62995487M', {
-    'dni': '62995487M',
-    'collegiateNumber': '283499999',
+  final doctorBox = Hive.box('doctors');
+  await doctorBox.put('32727485A', {
+    'dni': '32727485A',
+    'collegiateNumber': '123456789',
     'password': '12345678',
     'email': 'doctor@doctor.com',
     'name': 'Doctor Doctor',
-  });*/
+  });
+  await doctorBox.put('87654321X', {
+    'dni': '87654321X',
+    'collegiateNumber': '987654321',
+    'password': '12345678',
+    'email': 'doctor2@doctor2.com',
+    'name': 'Doctor2 Doctor2',
+  });
+
+  final patientBox = Hive.box('patients');
+  await patientBox.put('32738039T', {
+    'dni': '32738039T',
+    'password': '12345678',
+    'email': 'jaime@doctor.com',
+    'name': 'Jiame Doctor',
+    'doctor': '0',
+  });
+  await patientBox.put('12345678Z', {
+    'dni': '12345678Z',
+    'password': '12345678',
+    'email': 'paciente2@paciente2.com',
+    'name': 'paciente 2',
+    'doctor': '0',
+  });
 }
