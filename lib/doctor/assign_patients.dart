@@ -20,6 +20,7 @@ class _AssingPatientState extends State<AssingPatient> {
 
   final _boxPatients = Hive.box('patients');
   final _boxLogin = Hive.box('login');
+  final _boxDoctor = Hive.box('doctors');
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,9 @@ class _AssingPatientState extends State<AssingPatient> {
                     return 'Introduzca correctamente el DNI/NIE del paciente';
                   } else if (!_boxPatients.containsKey(value)) {
                     return 'El DNI/NIE del paciente no está registrado';
-                  } else if (_boxPatients.get(value)['doctor'] != '0') {
+                  } else if (_boxPatients.get(value)['doctor'] != '0' &&
+                      _boxDoctor
+                          .containsKey(_boxPatients.get(value)['doctor'])) {
                     return 'El paciente ya tiene un médico asignado';
                   }
 

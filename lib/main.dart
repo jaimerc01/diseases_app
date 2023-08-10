@@ -14,6 +14,7 @@ import 'admin/check_doctors.dart';
 import 'admin/add_doctor.dart';
 import 'doctor/check_patients.dart';
 import 'doctor/assign_patients.dart';
+import 'user/change_password.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,8 @@ class MyApp extends StatelessWidget {
               const CheckPatients(title: 'Consultar pacientes'),
           AssingPatient.routeName: (context) =>
               const AssingPatient(title: 'Asignar paciente'),
+          ChangePassword.routeName: (context) =>
+              const ChangePassword(title: 'Cambiar contraseña'),
         });
   }
 }

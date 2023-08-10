@@ -1,6 +1,7 @@
 import 'package:dni_nie_validator/dni_nie_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+//import '../user/encrypt_password.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -29,6 +30,7 @@ class _SignupState extends State<Signup> {
   final _boxAdmins = Hive.box('admins');
   final _boxDoctors = Hive.box('doctors');
   bool _obscurePassword = true;
+  //late String? _encryptedPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -207,9 +209,13 @@ class _SignupState extends State<Signup> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
+                        /*_encryptedPassword = EncryptPassword.encrypt(
+                            _controllerConFirmPassword.text);*/
+
                         _boxPatients.put(_controllerDni.text, {
                           'dni': _controllerDni.text,
                           'password': _controllerConFirmPassword.text,
+                          //'password': _encryptedPassword,
                           'email': _controllerEmail.text,
                           'name': _controllerName.text,
                           'doctor': '0',

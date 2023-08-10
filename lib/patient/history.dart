@@ -18,7 +18,9 @@ class _HistoryState extends State<History> {
   final _boxHistory = Hive.box('history');
   final _boxPatientHistory = Hive.box('patientHistory');
   final _boxPatients = Hive.box('patients');
+  final _boxDoctors = Hive.box('doctors');
   List<String> contenido = [];
+  bool empty = true;
 
   void _checkPatientHistory(String dni) {
     int index;
@@ -42,6 +44,7 @@ class _HistoryState extends State<History> {
         for (index = 0; index < boxHistoryLength; index++) {
           if (_boxHistory.getAt(index)['dni'] == dni) {
             _boxPatientHistory.add(_boxHistory.getAt(index));
+            empty = false;
           }
         }
       }
@@ -62,86 +65,103 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
+    empty = true;
     final args = ModalRoute.of(context)!.settings.arguments.toString();
     final dni = args.replaceAll(RegExp('[^A-Za-z0-9]'), '');
     _checkPatientHistory(dni);
     return Scaffold(
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 3),
-        body: ListView.builder(
-            itemCount: _boxPatientHistory.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Image.file(
-                              File(
-                                  "${_boxPatientHistory.getAt(index)['path']}"),
-                              fit: BoxFit.fitHeight),
-                        )),
-                    Expanded(
-                      flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 0.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              // ignore: lines_longer_than_80_chars
-                              'Fecha: ${_boxPatientHistory.getAt(index)['date']}',
-                              style: const TextStyle(fontSize: 17.0),
-                            ),
-                            Text(
-                              // ignore: lines_longer_than_80_chars
-                              'Resultado: ${_boxPatientHistory.getAt(index)['result']}',
-                              style: const TextStyle(fontSize: 17.0),
-                            ),
-                            Text(
-                              // ignore: lines_longer_than_80_chars
-                              'Precisión: ${(_boxPatientHistory.getAt(index)['accuracy'] * 100).toStringAsFixed(2)}%',
-                              style: const TextStyle(fontSize: 17.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: _boxPatients.containsKey(_boxLogin.get('dni'))
-                          ? IconButton(
-                              icon: const Icon(
-                                Icons.delete,
-                                color: Colors.blueGrey,
-                              ),
-                              onPressed: () => {
-                                _deleteResult(index),
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    width: 240,
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.secondary,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    behavior: SnackBarBehavior.floating,
-                                    content: const Text(
-                                        'Elemento borrado correctamente'),
-                                  ),
-                                )
-                              },
-                            )
-                          : const Text(''),
-                    ),
-                  ],
+        body: (contenido.isEmpty &&
+                    _boxPatients.containsKey(_boxLogin.get('dni'))) ||
+                (empty == true && _boxDoctors.containsKey(_boxLogin.get('dni')))
+            ? const Center(
+                child: Text(
+                  'El historial está vacío',
+                  textDirection: TextDirection.ltr,
+                  style: TextStyle(
+                    fontSize: 26,
+                    color: Colors.black87,
+                  ),
                 ),
-              );
-            }));
+              )
+            : ListView.builder(
+                itemCount: _boxPatientHistory.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                            flex: 1,
+                            child: SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: Image.file(File(
+                                      // ignore: lines_longer_than_80_chars
+                                      "${_boxPatientHistory.getAt(index)['path']}"),
+                                  fit: BoxFit.fitHeight),
+                            )),
+                        Expanded(
+                          flex: 2,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 0.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  // ignore: lines_longer_than_80_chars
+                                  'Fecha: ${_boxPatientHistory.getAt(index)['date']}',
+                                  style: const TextStyle(fontSize: 17.0),
+                                ),
+                                Text(
+                                  // ignore: lines_longer_than_80_chars
+                                  'Resultado: ${_boxPatientHistory.getAt(index)['result']}',
+                                  style: const TextStyle(fontSize: 17.0),
+                                ),
+                                Text(
+                                  // ignore: lines_longer_than_80_chars
+                                  'Precisión: ${(_boxPatientHistory.getAt(index)['accuracy'] * 100).toStringAsFixed(2)}%',
+                                  style: const TextStyle(fontSize: 17.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: _boxPatients.containsKey(_boxLogin.get('dni'))
+                              ? IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.blueGrey,
+                                  ),
+                                  onPressed: () => {
+                                    _deleteResult(index),
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        width: 240,
+                                        backgroundColor: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        content: const Text(
+                                            'Elemento borrado correctamente'),
+                                      ),
+                                    )
+                                  },
+                                )
+                              : const Text(''),
+                        ),
+                      ],
+                    ),
+                  );
+                }));
   }
 }

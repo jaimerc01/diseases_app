@@ -48,6 +48,29 @@ class _ProfileState extends State<Profile> {
           onPressed: () => Navigator.pushNamed(context, '/updateProfile'),
           child: const Text('Actualizar datos'),
         ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/password');
+              },
+              child: const Text('Cambiar contraseña'),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                _boxPatients.delete(_boxLogin.get('dni'));
+                Navigator.pushNamed(context, '/login');
+              },
+              child: const Text('Borrar cuenta'),
+            ),
+          ],
+        ),
       ];
     } else if (_boxAdmins.containsKey(_boxLogin.get('dni'))) {
       return <Widget>[
@@ -90,6 +113,40 @@ class _ProfileState extends State<Profile> {
             'Correo electrónico: ' +
                 '${_boxDoctors.get(_boxLogin.get('dni'))['email']}',
             style: const TextStyle(fontSize: 18)),
+        const SizedBox(height: 50),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size.fromHeight(50),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          onPressed: () => Navigator.pushNamed(context, '/updateProfile'),
+          child: const Text('Actualizar datos'),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/password');
+              },
+              child: const Text('Cambiar contraseña'),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                _boxDoctors.delete(_boxLogin.get('dni'));
+                Navigator.pushNamed(context, '/login');
+              },
+              child: const Text('Borrar cuenta'),
+            ),
+          ],
+        ),
       ];
     }
   }

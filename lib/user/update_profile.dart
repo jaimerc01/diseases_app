@@ -15,36 +15,34 @@ class UpdateProfile extends StatefulWidget {
 class _UpdateProfileState extends State<UpdateProfile> {
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
-  //final _boxAdmins = Hive.box('admins');
+  final _boxDoctors = Hive.box('doctors');
 
-  late final String _dni = '${_boxLogin.get('dni')}';
-  late final String _patientName =
-      '${_boxPatients.get(_boxLogin.get('dni'))['name']}';
-  late final String _patientEmail =
-      '${_boxPatients.get(_boxLogin.get('dni'))['email']}';
-  late final String _patientPassword =
-      '${_boxPatients.get(_boxLogin.get('dni'))['password']}';
+  String _password = '';
+  String _patientDoctor = '';
 
-  /*late final String _adminName =
-      '${_boxAdmins.get(_boxLogin.get('dni'))['name']}';
-  late final String _adminEmail =
-      '${_boxPatients.get(_boxAdmins.get('dni'))['email']}';
-  late final String _adminPassword =
-      '${_boxPatients.get(_boxAdmins.get('dni'))['password']}';*/
+  String _doctorCollegiateNumber = '';
 
   final TextEditingController _controllerDni = TextEditingController();
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
 
   void _initUser() {
-    _controllerDni.text = _dni;
-    //if (!_boxAdmins.containsKey(_boxLogin.get('dni'))) {
-    _controllerName.text = _patientName;
-    _controllerEmail.text = _patientEmail;
-    /*} else {
-      _controllerName.text = _adminName;
-      _controllerEmail.text = _adminPassword;
-    }*/
+    _controllerDni.text = '${_boxLogin.get('dni')}';
+    if (_boxPatients.containsKey(_boxLogin.get('dni'))) {
+      _controllerName.text =
+          '${_boxPatients.get(_boxLogin.get('dni'))['name']}';
+      _controllerEmail.text =
+          '${_boxPatients.get(_boxLogin.get('dni'))['email']}';
+      _password = '${_boxPatients.get(_boxLogin.get('dni'))['password']}';
+      _patientDoctor = '${_boxPatients.get(_boxLogin.get('dni'))['doctor']}';
+    } else if (_boxDoctors.containsKey(_boxLogin.get('dni'))) {
+      _controllerName.text = '${_boxDoctors.get(_boxLogin.get('dni'))['name']}';
+      _controllerEmail.text =
+          '${_boxDoctors.get(_boxLogin.get('dni'))['email']}';
+      _password = '${_boxDoctors.get(_boxLogin.get('dni'))['password']}';
+      _doctorCollegiateNumber =
+          '${_boxDoctors.get(_boxLogin.get('dni'))['collegiateNumber']}';
+    }
   }
 
   @override
@@ -122,22 +120,24 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         ),
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
-                            //if(!_boxAdmins.containsKey(_boxLogin.get('dni'))){
-                            _boxPatients.put(_controllerDni.text, {
-                              'dni': _controllerDni.text,
-                              'password': _patientPassword,
-                              'email': _controllerEmail.text,
-                              'name': _controllerName.text,
-                              'doctor:': '0',
-                            });
-                            /*} else {
-                              _boxAdmins.put(_controllerDni.text, {
+                            if (_boxPatients
+                                .containsKey(_boxLogin.get('dni'))) {
+                              _boxPatients.put(_controllerDni.text, {
                                 'dni': _controllerDni.text,
-                                'password': _patientPassword,
+                                'password': _password,
                                 'email': _controllerEmail.text,
                                 'name': _controllerName.text,
+                                'doctor': _patientDoctor,
                               });
-                            }*/
+                            } else {
+                              _boxDoctors.put(_controllerDni.text, {
+                                'dni': _controllerDni.text,
+                                'password': _password,
+                                'email': _controllerEmail.text,
+                                'name': _controllerName.text,
+                                'collegiateNumber': _doctorCollegiateNumber,
+                              });
+                            }
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(

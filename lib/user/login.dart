@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+//import 'encrypt_password.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -23,6 +24,7 @@ class _LoginState extends State<Login> {
   final _boxPatientHistory = Hive.box('patientHistory');
   final _boxAdmins = Hive.box('admins');
   final _boxDoctors = Hive.box('doctors');
+  //late String? _encryptedPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +100,24 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 validator: (String? value) {
+                  /*
+                  _encryptedPassword = EncryptPassword.encrypt(value);
+                  if (value == null || value.isEmpty) {
+                    return 'Introduzca la contraseña';
+                  } else if (_boxPatients.containsKey(_controllerDni.text) &&
+                      _encryptedPassword !=
+                          _boxPatients.get(_controllerDni.text)['password']) {
+                    return 'Contraseña incorrecta';
+                  } else if (_boxAdmins.containsKey(_controllerDni.text) &&
+                      _encryptedPassword !=
+                          _boxAdmins.get(_controllerDni.text)['password']) {
+                    return 'Contraseña incorrecta';
+                  } else if (_boxDoctors.containsKey(_controllerDni.text) &&
+                      _encryptedPassword !=
+                          _boxDoctors.get(_controllerDni.text)['password']) {
+                    return 'Contraseña incorrecta';
+                  }*/
+
                   if (value == null || value.isEmpty) {
                     return 'Introduzca la contraseña';
                   } else if (_boxPatients.containsKey(_controllerDni.text) &&
