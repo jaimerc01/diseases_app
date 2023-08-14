@@ -21,7 +21,7 @@ class _CheckPatientsState extends State<CheckPatients> {
   //List<dynamic> _searched = [];
   //final List<dynamic> _patients = [];
 
-  final TextEditingController _controller = TextEditingController();
+  //final TextEditingController _controller = TextEditingController();
 
   void _checkPatients() {
     int index;
@@ -37,7 +37,7 @@ class _CheckPatientsState extends State<CheckPatients> {
     }
   }
 
-  void checkHistory(int index) {
+  void checkHistory(int index) async {
     int i;
     for (i = 0; i < _boxPatients.length; i++) {
       if (_boxPatients.getAt(i)['dni'] == _contenido[index]) {
@@ -52,8 +52,62 @@ class _CheckPatientsState extends State<CheckPatients> {
     }
   }
 
-  void _unassignPatient(int index) {
-    int i;
+  void _unassignPatient(int index) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Desasignar Paciente'),
+          content: const Text(
+              '¿Estás seguro de que deseas desasignar este paciente?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Desasignar'),
+              onPressed: () {
+                int i;
+                for (i = 0; i < _boxPatients.length; i++) {
+                  if (_boxPatients.getAt(i)['dni'] == _contenido[index]) {
+                    _boxPatients.put(_contenido[index], {
+                      'dni': _contenido[index],
+                      'password': _boxPatients.getAt(i)['password'],
+                      'email': _boxPatients.getAt(i)['email'],
+                      'name': _boxPatients.getAt(i)['name'],
+                      'doctor': '0',
+                    });
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => super.widget));
+                  }
+                }
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    width: 180,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                    content: const Center(
+                      child: Text('Paciente desasignado'),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /*int i;
     for (i = 0; i < _boxPatients.length; i++) {
       if (_boxPatients.getAt(i)['dni'] == _contenido[index]) {
         _boxPatients.put(_contenido[index], {
@@ -67,7 +121,7 @@ class _CheckPatientsState extends State<CheckPatients> {
             MaterialPageRoute(builder: (BuildContext context) => super.widget));
       }
     }
-  }
+  }*/
 
   /*void _searchPatient(String value) {
     var results = <dynamic>[];
@@ -87,11 +141,12 @@ class _CheckPatientsState extends State<CheckPatients> {
   Widget build(BuildContext context) {
     _checkPatients();
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 5),
         body: Column(
           children: <Widget>[
-            Container(
+            /*Container(
               margin: const EdgeInsets.fromLTRB(5.0, 20.0, 5.0, 5.0),
               child: TextField(
                 controller: _controller,
@@ -100,21 +155,21 @@ class _CheckPatientsState extends State<CheckPatients> {
                   hintText: 'dni',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: darkGreen),
+                    borderSide: const BorderSide(color: pantoneBlueVeryPery),
                   ),
                 ),
                 //onChanged: (value) => _searchPatient(value),
               ),
-            ),
+            ),*/
             Expanded(
               child: ListView.builder(
                   itemCount: _box.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
-                          flex: 2,
+                          flex: 5,
                           child: Padding(
                             padding:
                                 const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 0.0),
@@ -144,7 +199,8 @@ class _CheckPatientsState extends State<CheckPatients> {
                           child: IconButton(
                             icon: const Icon(
                               Icons.view_list,
-                              color: Colors.blueGrey,
+                              color: pantoneBlueVeryPeryVariant,
+                              semanticLabel: 'Mostrar historial',
                             ),
                             onPressed: () => {
                               checkHistory(index),
@@ -156,22 +212,11 @@ class _CheckPatientsState extends State<CheckPatients> {
                           child: IconButton(
                             icon: const Icon(
                               Icons.delete,
-                              color: Colors.blueGrey,
+                              color: pantoneBlueVeryPeryVariant,
+                              semanticLabel: 'Desasignar paciente',
                             ),
                             onPressed: () => {
                               _unassignPatient(index),
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  width: 240,
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.secondary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
-                                  content: const Text('Paciente desasignado'),
-                                ),
-                              )
                             },
                           ),
                         ),
@@ -182,9 +227,10 @@ class _CheckPatientsState extends State<CheckPatients> {
           ],
         ),
         floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: pantoneBlueVeryPeryVariant,
           onPressed: () => Navigator.pushNamed(context, '/assignPatient'),
           tooltip: 'Presione para asingar un paciente',
-          label: const Text('Asignar paciente'),
+          label: const Text('ASIGNAR PACIENTE'),
           icon: const Icon(Icons.add),
         ));
   }

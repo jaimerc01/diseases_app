@@ -13,7 +13,7 @@ class DiseaseImage extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      color: Colors.grey,
+      color: Colors.blueGrey,
       child: (file == null)
           ? _emptyWidget()
           : Image.file(file!, fit: BoxFit.cover),
@@ -22,6 +22,6 @@ class DiseaseImage extends StatelessWidget {
 
   Widget _emptyWidget() {
     return const Center(
-        child: Text('Seleccione una foto', style: analyzingTextStyle));
+        child: Text('Seleccione una foto', style: imageTextStyle));
   }
 }

@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
 
-const roboto = 'Roboto';
-const squadaOne = 'SquadaOne';
+const pantoneBlueVeryPeryVariant = Color.fromARGB(255, 75, 77, 177);
 
-const darkGreen = Color(0xFF395144);
-const brown = Color(0XFFAA8B56);
+const titleTextStyle = TextStyle(
+    fontSize: 48.0,
+    color: pantoneBlueVeryPeryVariant,
+    fontWeight: FontWeight.bold);
 
-const ligthGreen = Color(0xFFa7c957);
-const cream = Color(0xFFf2e8cf);
+const classifierTextStyle =
+    TextStyle(fontSize: 22.0, color: pantoneBlueVeryPeryVariant);
 
-const titleTextStyle =
-    TextStyle(fontFamily: squadaOne, fontSize: 48.0, color: ligthGreen);
+const imageTextStyle = TextStyle(fontSize: 25.0, color: Colors.white);
 
-const analyzingTextStyle =
-    TextStyle(fontFamily: roboto, fontSize: 25.0, color: cream);
+const buttonTextStyle = TextStyle(
+  fontSize: 20.0,
+  color: Colors.white,
+);
 
-const resultTextStyle =
-    TextStyle(fontFamily: squadaOne, fontSize: 40.0, color: cream);
+const subtitleTextStyle = TextStyle(
+    fontSize: 30.0,
+    color: pantoneBlueVeryPeryVariant,
+    fontWeight: FontWeight.bold);
 
-const accuracyTextStyle =
-    TextStyle(fontFamily: roboto, fontSize: 22.0, color: cream);
+const formFieldTextStyle = TextStyle(fontSize: 18.0);
+
+const errorTextStyle = TextStyle(fontSize: 13.0);
+
+const drawerTextStyle = TextStyle(fontSize: 18.0, color: Colors.white);
+
+const historyTextStyle = TextStyle(fontSize: 17.0, color: Colors.black);

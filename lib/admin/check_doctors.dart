@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../widget/drawer_app.dart';
+import '../styles.dart';
 
 class CheckDoctors extends StatefulWidget {
   final String? title;
@@ -16,14 +17,53 @@ class _CheckDoctorsState extends State<CheckDoctors> {
   final _boxDoctors = Hive.box('doctors');
 
   void _deleteDoctor(int index) {
-    _boxDoctors.deleteAt(index);
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (BuildContext context) => super.widget));
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Confirmación borrado de doctor'),
+        content: const Text(
+            // ignore: lines_longer_than_80_chars
+            '¿Está seguro de que desea borrar la cuenta de este doctor permanentemente?'),
+        actions: [
+          TextButton(
+            child: const Text('CANCELAR'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('CONFIRMAR'),
+            onPressed: () {
+              _boxDoctors.deleteAt(index);
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => super.widget));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  width: 240,
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  behavior: SnackBarBehavior.floating,
+                  content: const Center(
+                    child: Text('Doctor borrado correctamente'),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 4),
         body: ListView.builder(
@@ -32,7 +72,7 @@ class _CheckDoctorsState extends State<CheckDoctors> {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
                       flex: 2,
@@ -69,23 +109,10 @@ class _CheckDoctorsState extends State<CheckDoctors> {
                       child: IconButton(
                         icon: const Icon(
                           Icons.delete,
-                          color: Colors.blueGrey,
+                          color: pantoneBlueVeryPeryVariant,
                         ),
                         onPressed: () => {
                           _deleteDoctor(index),
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              width: 240,
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              content:
-                                  const Text('Doctor borrado correctamente'),
-                            ),
-                          )
                         },
                       ),
                     ),
@@ -94,9 +121,10 @@ class _CheckDoctorsState extends State<CheckDoctors> {
               );
             }),
         floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: pantoneBlueVeryPeryVariant,
           onPressed: () => Navigator.pushNamed(context, '/addDoctor'),
           tooltip: 'Presione para añadir un doctor',
-          label: const Text('Añadir doctor'),
+          label: const Text('AÑADIR DOCTOR'),
           icon: const Icon(Icons.add),
         ));
   }

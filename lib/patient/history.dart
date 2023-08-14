@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../widget/drawer_app.dart';
+import '../styles.dart';
 
 class History extends StatefulWidget {
   final String? title;
@@ -21,6 +22,53 @@ class _HistoryState extends State<History> {
   final _boxDoctors = Hive.box('doctors');
   List<String> contenido = [];
   bool empty = true;
+
+  Future<void> _confirmDeletion(int index) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar borrado'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                    // ignore: lines_longer_than_80_chars
+                    '¿Estás seguro de que deseas eliminar este resultado del historial permanentemente?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('CANCELAR'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+                child: const Text('CONFIRMAR'),
+                onPressed: () {
+                  _deleteResult(index);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      width: 240,
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      content: const Center(
+                        child: Text('Elemento borrado correctamente'),
+                      ),
+                    ),
+                  );
+                }),
+          ],
+        );
+      },
+    );
+  }
 
   void _checkPatientHistory(String dni) {
     int index;
@@ -70,6 +118,7 @@ class _HistoryState extends State<History> {
     final dni = args.replaceAll(RegExp('[^A-Za-z0-9]'), '');
     _checkPatientHistory(dni);
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 3),
         body: (contenido.isEmpty &&
@@ -81,7 +130,7 @@ class _HistoryState extends State<History> {
                   textDirection: TextDirection.ltr,
                   style: TextStyle(
                     fontSize: 26,
-                    color: Colors.black87,
+                    color: pantoneBlueVeryPeryVariant,
                   ),
                 ),
               )
@@ -91,7 +140,7 @@ class _HistoryState extends State<History> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
                             flex: 1,
@@ -109,22 +158,22 @@ class _HistoryState extends State<History> {
                             padding:
                                 const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 0.0),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   // ignore: lines_longer_than_80_chars
                                   'Fecha: ${_boxPatientHistory.getAt(index)['date']}',
-                                  style: const TextStyle(fontSize: 17.0),
+                                  style: historyTextStyle,
                                 ),
                                 Text(
                                   // ignore: lines_longer_than_80_chars
                                   'Resultado: ${_boxPatientHistory.getAt(index)['result']}',
-                                  style: const TextStyle(fontSize: 17.0),
+                                  style: historyTextStyle,
                                 ),
                                 Text(
                                   // ignore: lines_longer_than_80_chars
                                   'Precisión: ${(_boxPatientHistory.getAt(index)['accuracy'] * 100).toStringAsFixed(2)}%',
-                                  style: const TextStyle(fontSize: 17.0),
+                                  style: historyTextStyle,
                                 ),
                               ],
                             ),
@@ -136,26 +185,9 @@ class _HistoryState extends State<History> {
                               ? IconButton(
                                   icon: const Icon(
                                     Icons.delete,
-                                    color: Colors.blueGrey,
+                                    color: pantoneBlueVeryPeryVariant,
                                   ),
-                                  onPressed: () => {
-                                    _deleteResult(index),
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        width: 240,
-                                        backgroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        behavior: SnackBarBehavior.floating,
-                                        content: const Text(
-                                            'Elemento borrado correctamente'),
-                                      ),
-                                    )
-                                  },
+                                  onPressed: () => _confirmDeletion(index),
                                 )
                               : const Text(''),
                         ),

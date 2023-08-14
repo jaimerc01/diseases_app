@@ -15,6 +15,7 @@ import 'admin/add_doctor.dart';
 import 'doctor/check_patients.dart';
 import 'doctor/assign_patients.dart';
 import 'user/change_password.dart';
+import 'styles.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 28, 92, 28),
+            seedColor: pantoneBlueVeryPeryVariant,
           ),
         ),
         initialRoute: Login.routeName,

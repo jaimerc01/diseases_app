@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'drawer_app.dart';
+import '../styles.dart';
 
 class Dashboard extends StatefulWidget {
   final String? title;
@@ -21,6 +22,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       appBar: AppBar(title: Text(widget.title!)),
       drawer: const DrawerApp(drawerValue: 0),
       body: Center(
@@ -28,9 +30,10 @@ class _DashboardState extends State<Dashboard> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 150),
-            Text(
+            const Text(
               'Bienvenido de nuevo',
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: subtitleTextStyle,
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
             Text(
@@ -39,7 +42,7 @@ class _DashboardState extends State<Dashboard> {
                       _boxPatients.containsKey(_boxLogin.get('dni'))
                   ? _boxPatients.get(_boxLogin.get('dni'))['name'].toString()
                   : '',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: subtitleTextStyle,
             ),
             Text(
               _boxAdmins.isNotEmpty &&
@@ -47,7 +50,7 @@ class _DashboardState extends State<Dashboard> {
                       _boxAdmins.containsKey(_boxLogin.get('dni'))
                   ? _boxAdmins.get(_boxLogin.get('dni'))['name'].toString()
                   : '',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: subtitleTextStyle,
             ),
             Text(
               _boxDoctors.isNotEmpty &&
@@ -55,7 +58,7 @@ class _DashboardState extends State<Dashboard> {
                       _boxDoctors.containsKey(_boxLogin.get('dni'))
                   ? _boxDoctors.get(_boxLogin.get('dni'))['name'].toString()
                   : '',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: subtitleTextStyle,
             )
           ],
         ),

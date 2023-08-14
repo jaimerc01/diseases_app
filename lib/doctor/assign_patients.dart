@@ -1,6 +1,7 @@
 import 'package:dni_nie_validator/dni_nie_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../styles.dart';
 import '../widget/drawer_app.dart';
 
 class AssingPatient extends StatefulWidget {
@@ -36,9 +37,11 @@ class _AssingPatientState extends State<AssingPatient> {
             children: [
               const SizedBox(height: 50),
               TextFormField(
+                style: formFieldTextStyle,
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
+                  errorStyle: errorTextStyle,
                   labelText: 'DNI/NIE del paciente',
                   prefixIcon: const Icon(Icons.credit_card),
                   border: OutlineInputBorder(
@@ -69,45 +72,51 @@ class _AssingPatientState extends State<AssingPatient> {
               const SizedBox(height: 50),
               Column(
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        _boxPatients.put(_controllerDni.text, {
-                          'dni': _controllerDni.text,
-                          'password':
-                              _boxPatients.get(_controllerDni.text)['password'],
-                          'email':
-                              _boxPatients.get(_controllerDni.text)['email'],
-                          'name': _boxPatients.get(_controllerDni.text)['name'],
-                          'doctor': _boxLogin.get('dni'),
-                        });
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          _boxPatients.put(_controllerDni.text, {
+                            'dni': _controllerDni.text,
+                            'password': _boxPatients
+                                .get(_controllerDni.text)['password'],
+                            'email':
+                                _boxPatients.get(_controllerDni.text)['email'],
+                            'name':
+                                _boxPatients.get(_controllerDni.text)['name'],
+                            'doctor': _boxLogin.get('dni'),
+                          });
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            width: 200,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              width: 260,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              content: const Center(
+                                child: Text('Paciente asignado correctamente'),
+                              ),
                             ),
-                            behavior: SnackBarBehavior.floating,
-                            content:
-                                const Text('Paciente asignado correctamente'),
-                          ),
-                        );
+                          );
 
-                        _formKey.currentState?.reset();
+                          _formKey.currentState?.reset();
 
-                        Navigator.pushNamed(context, '/patients');
-                      }
-                    },
-                    child: const Text('Asignar paciente'),
+                          Navigator.pushNamed(context, '/patients');
+                        }
+                      },
+                      child: const Text('ASIGNAR PACIENTE',
+                          style: buttonTextStyle),
+                    ),
                   ),
                 ],
               ),

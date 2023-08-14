@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import '../styles.dart';
 
 import '../widget/drawer_app.dart';
 
@@ -59,6 +60,7 @@ class _ChangePassword extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 2),
         body: Form(
@@ -68,10 +70,12 @@ class _ChangePassword extends State<ChangePassword> {
                 child: Column(children: [
                   const SizedBox(height: 50),
                   TextFormField(
+                    style: formFieldTextStyle,
                     controller: _controllerPassword,
                     obscureText: _obscurePassword,
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
+                      errorStyle: errorTextStyle,
                       labelText: 'Contraseña actual',
                       prefixIcon: const Icon(Icons.password_outlined),
                       suffixIcon: IconButton(
@@ -114,11 +118,13 @@ class _ChangePassword extends State<ChangePassword> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
+                    style: formFieldTextStyle,
                     controller: _controllerNewPassword,
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: _obscurePassword,
                     focusNode: _focusNodeNewPassword,
                     decoration: InputDecoration(
+                      errorStyle: errorTextStyle,
                       labelText: 'Nueva contraseña',
                       prefixIcon: const Icon(Icons.password_outlined),
                       suffixIcon: IconButton(
@@ -150,11 +156,13 @@ class _ChangePassword extends State<ChangePassword> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
+                    style: formFieldTextStyle,
                     controller: _controllerConfirmNewPassword,
                     obscureText: _obscurePassword,
                     focusNode: _focusNodeConfirmNewPassword,
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
+                      errorStyle: errorTextStyle,
                       labelText: 'Confirmar nueva contraseña',
                       prefixIcon: const Icon(Icons.password_outlined),
                       suffixIcon: IconButton(
@@ -185,54 +193,64 @@ class _ChangePassword extends State<ChangePassword> {
                   const SizedBox(height: 50),
                   Column(
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              if (_boxPatients
+                                  .containsKey(_boxLogin.get('dni'))) {
+                                _boxPatients.put(_dni, {
+                                  'dni': _dni,
+                                  'password':
+                                      _controllerConfirmNewPassword.text,
+                                  'email': _email,
+                                  'name': _name,
+                                  'doctor': _patientDoctor,
+                                });
+                              } else {
+                                _boxDoctors.put(_dni, {
+                                  'dni': _dni,
+                                  'password':
+                                      _controllerConfirmNewPassword.text,
+                                  'email': _email,
+                                  'name': _name,
+                                  'collegiateNumber': _doctorCollegiateNumber,
+                                });
+                              }
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  width: 200,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  content: const Center(
+                                    child: Text(
+                                        'Contraseña modificada correctamente'),
+                                  ),
+                                ),
+                              );
+
+                              _formKey.currentState?.reset();
+
+                              Navigator.pushNamed(context, '/profile');
+                            }
+                          },
+                          child: const Text(
+                            'MODIFICAR CONTRASEÑA',
+                            style: buttonTextStyle,
                           ),
                         ),
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            if (_boxPatients
-                                .containsKey(_boxLogin.get('dni'))) {
-                              _boxPatients.put(_dni, {
-                                'dni': _dni,
-                                'password': _controllerConfirmNewPassword.text,
-                                'email': _email,
-                                'name': _name,
-                                'doctor': _patientDoctor,
-                              });
-                            } else {
-                              _boxDoctors.put(_dni, {
-                                'dni': _dni,
-                                'password': _controllerConfirmNewPassword.text,
-                                'email': _email,
-                                'name': _name,
-                                'collegiateNumber': _doctorCollegiateNumber,
-                              });
-                            }
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                width: 200,
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                                content: const Text(
-                                    'Contraseña modificada correctamente'),
-                              ),
-                            );
-
-                            _formKey.currentState?.reset();
-
-                            Navigator.pushNamed(context, '/profile');
-                          }
-                        },
-                        child: const Text('Modificar contraseña'),
                       ),
                     ],
                   ),

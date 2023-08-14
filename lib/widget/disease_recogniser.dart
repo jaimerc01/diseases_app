@@ -29,7 +29,6 @@ enum _ResultStatus {
 }
 
 class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
-  bool _analyzing = false;
   File? _imageFile;
   final picker = ImagePicker();
   final double _bigSize = 250;
@@ -55,27 +54,6 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     _classifier = classifier;
   }
 
-  Widget _buildAnalyzingText() {
-    if (!_analyzing) {
-      return const SizedBox.shrink();
-    }
-    return const Text('Analizando...', style: analyzingTextStyle);
-  }
-
-  Widget _buildTitle() {
-    return const Text(
-      'Clasificador de enfermedades',
-      style: titleTextStyle,
-      textAlign: TextAlign.center,
-    );
-  }
-
-  void _setAnalyzing(bool value) {
-    setState(() {
-      _analyzing = value;
-    });
-  }
-
   void _onPickImage(ImageSource source) async {
     final pickedImage = await picker.pickImage(source: source);
 
@@ -92,8 +70,6 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   }
 
   void _analyzeImage(File image) {
-    _setAnalyzing(true);
-
     final imageInput = img.decodeImage(image.readAsBytesSync())!;
 
     final resultCategory = _classifier!.predict(imageInput);
@@ -103,8 +79,6 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     final result = resultCategory.score >= 0.8
         ? _ResultStatus.found
         : _ResultStatus.notFound;
-
-    _setAnalyzing(false);
 
     setState(() {
       _resultStatus = result;
@@ -146,9 +120,9 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
 
     return Column(
       children: [
-        Text(title, style: resultTextStyle),
+        Text(title, style: classifierTextStyle),
         const SizedBox(height: 10),
-        Text(accuracyLabel, style: accuracyTextStyle)
+        Text(accuracyLabel, style: classifierTextStyle)
       ],
     );
   }
@@ -156,47 +130,47 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title!)),
-        drawer: const DrawerApp(drawerValue: 1),
-        backgroundColor: darkGreen,
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(top: 35),
-                child: _buildTitle(),
+      appBar: AppBar(title: Text(widget.title!)),
+      drawer: const DrawerApp(drawerValue: 1),
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 35),
+              child: Text(
+                'Clasificador de enfermedades',
+                style: titleTextStyle,
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: [
-                  DiseaseImage(file: _imageFile, size: _bigSize),
-                  _buildAnalyzingText(),
-                ],
-              ),
-              const SizedBox(height: 10),
-              _buildResultView(),
-              const Spacer(flex: 4),
-              TextButton(
-                onPressed: () => _onPickImage(ImageSource.gallery),
-                child: Container(
-                  width: 270,
-                  height: 50,
-                  color: brown,
-                  child: const Center(
-                      child: Text('Abrir galería',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w600,
-                            color: cream,
-                          ))),
+            ),
+            const SizedBox(height: 20),
+            Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                DiseaseImage(file: _imageFile, size: _bigSize),
+              ],
+            ),
+            const SizedBox(height: 10),
+            _buildResultView(),
+            const SizedBox(height: 30),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.6,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
+                onPressed: () => _onPickImage(ImageSource.gallery),
+                child: const Text('ABRIR GALERÍA', style: buttonTextStyle),
               ),
-              const Spacer(),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

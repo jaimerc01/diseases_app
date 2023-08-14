@@ -50,20 +50,10 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
+  mockito: ^5.0.0
 
 flutter:
   uses-material-design: true
-
-  fonts:  
-  - family: SquadaOne
-    fonts:
-      - asset: assets/SquadaOne-Regular.ttf
-  - family: ContrailOne
-    fonts:
-      - asset: assets/ContrailOne-Regular.ttf
-  - family: Roboto
-    fonts:
-      - asset: assets/Roboto-Light.ttf      
-  
+ 
   assets:
     - assets/

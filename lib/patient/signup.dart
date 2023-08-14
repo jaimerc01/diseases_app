@@ -1,6 +1,7 @@
 import 'package:dni_nie_validator/dni_nie_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../styles.dart';
 //import '../user/encrypt_password.dart';
 
 class Signup extends StatefulWidget {
@@ -43,25 +44,26 @@ class _SignupState extends State<Signup> {
           child: Column(
             children: [
               const SizedBox(height: 100),
-              Text(
+              const Text(
                 'Cree su cuenta personal',
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: subtitleTextStyle,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 50),
               TextFormField(
+                style: formFieldTextStyle,
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                  labelText: 'DNI/NIE',
-                  prefixIcon: const Icon(Icons.credit_card),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                    labelText: 'DNI/NIE',
+                    prefixIcon: const Icon(Icons.credit_card),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Introduzca su DNI/NIE.';
@@ -81,19 +83,20 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                style: formFieldTextStyle,
                 controller: _controllerEmail,
                 focusNode: _focusNodeEmail,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                  labelText: 'Correo electrónico',
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                    labelText: 'Correo electrónico',
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Introduzca su correo electrónico';
@@ -106,19 +109,20 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                style: formFieldTextStyle,
                 controller: _controllerName,
                 focusNode: _focusNodeNombre,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                  labelText: 'Nombre completo',
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                    labelText: 'Nombre completo',
+                    prefixIcon: const Icon(Icons.person_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Introduzca su nombre completo';
@@ -129,29 +133,30 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                style: formFieldTextStyle,
                 controller: _controllerPassword,
                 obscureText: _obscurePassword,
                 focusNode: _focusNodePassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                  labelText: 'Contraseña',
-                  prefixIcon: const Icon(Icons.password_outlined),
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                      icon: _obscurePassword
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                    labelText: 'Contraseña',
+                    prefixIcon: const Icon(Icons.password_outlined),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: _obscurePassword
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Introduzca una contraseña';
@@ -165,29 +170,30 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                style: formFieldTextStyle,
                 controller: _controllerConFirmPassword,
                 obscureText: _obscurePassword,
                 focusNode: _focusNodeConfirmPassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                  labelText: 'Confirmar contraseña',
-                  prefixIcon: const Icon(Icons.password_outlined),
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                      icon: _obscurePassword
-                          ? const Icon(Icons.visibility_outlined)
-                          : const Icon(Icons.visibility_off_outlined)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+                    labelText: 'Confirmar contraseña',
+                    prefixIcon: const Icon(Icons.password_outlined),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                        icon: _obscurePassword
+                            ? const Icon(Icons.visibility_outlined)
+                            : const Icon(Icons.visibility_off_outlined)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
                     return 'Introduzca su contraseña';
@@ -200,46 +206,51 @@ class _SignupState extends State<Signup> {
               const SizedBox(height: 50),
               Column(
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.6,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState?.validate() ?? false) {
-                        /*_encryptedPassword = EncryptPassword.encrypt(
+                      onPressed: () {
+                        if (_formKey.currentState?.validate() ?? false) {
+                          /*_encryptedPassword = EncryptPassword.encrypt(
                             _controllerConFirmPassword.text);*/
 
-                        _boxPatients.put(_controllerDni.text, {
-                          'dni': _controllerDni.text,
-                          'password': _controllerConFirmPassword.text,
-                          //'password': _encryptedPassword,
-                          'email': _controllerEmail.text,
-                          'name': _controllerName.text,
-                          'doctor': '0',
-                        });
+                          _boxPatients.put(_controllerDni.text, {
+                            'dni': _controllerDni.text,
+                            'password': _controllerConFirmPassword.text,
+                            //'password': _encryptedPassword,
+                            'email': _controllerEmail.text,
+                            'name': _controllerName.text,
+                            'doctor': '0',
+                          });
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            width: 200,
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              width: 200,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.secondary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              content: const Center(
+                                child: Text('Registrado correctamente'),
+                              ),
                             ),
-                            behavior: SnackBarBehavior.floating,
-                            content: const Text('Registrado correctamente'),
-                          ),
-                        );
+                          );
 
-                        _formKey.currentState?.reset();
+                          _formKey.currentState?.reset();
 
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: const Text('Registrarse'),
+                          Navigator.pushReplacementNamed(context, '/login');
+                        }
+                      },
+                      child: const Text('REGISTRARSE', style: buttonTextStyle),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

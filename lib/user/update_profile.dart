@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../widget/drawer_app.dart';
+import '../styles.dart';
 
 class UpdateProfile extends StatefulWidget {
   final String? title;
@@ -56,6 +57,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 2),
         body: Form(
@@ -65,9 +67,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 child: Column(children: [
                   const SizedBox(height: 50),
                   TextFormField(
+                    style: formFieldTextStyle,
                     controller: _controllerEmail,
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
+                      errorStyle: errorTextStyle,
                       labelText: 'Correo electrónico',
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
@@ -89,9 +93,11 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
+                    style: formFieldTextStyle,
                     controller: _controllerName,
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
+                      errorStyle: errorTextStyle,
                       labelText: 'Nombre completo',
                       prefixIcon: const Icon(Icons.person_outline),
                       border: OutlineInputBorder(
@@ -111,54 +117,60 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   const SizedBox(height: 50),
                   Column(
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            if (_boxPatients
-                                .containsKey(_boxLogin.get('dni'))) {
-                              _boxPatients.put(_controllerDni.text, {
-                                'dni': _controllerDni.text,
-                                'password': _password,
-                                'email': _controllerEmail.text,
-                                'name': _controllerName.text,
-                                'doctor': _patientDoctor,
-                              });
-                            } else {
-                              _boxDoctors.put(_controllerDni.text, {
-                                'dni': _controllerDni.text,
-                                'password': _password,
-                                'email': _controllerEmail.text,
-                                'name': _controllerName.text,
-                                'collegiateNumber': _doctorCollegiateNumber,
-                              });
-                            }
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              if (_boxPatients
+                                  .containsKey(_boxLogin.get('dni'))) {
+                                _boxPatients.put(_controllerDni.text, {
+                                  'dni': _controllerDni.text,
+                                  'password': _password,
+                                  'email': _controllerEmail.text,
+                                  'name': _controllerName.text,
+                                  'doctor': _patientDoctor,
+                                });
+                              } else {
+                                _boxDoctors.put(_controllerDni.text, {
+                                  'dni': _controllerDni.text,
+                                  'password': _password,
+                                  'email': _controllerEmail.text,
+                                  'name': _controllerName.text,
+                                  'collegiateNumber': _doctorCollegiateNumber,
+                                });
+                              }
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                width: 200,
-                                backgroundColor:
-                                    Theme.of(context).colorScheme.secondary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  width: 200,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  content: const Center(
+                                    child: Text(
+                                        'Perfil actualizado correctamente'),
+                                  ),
                                 ),
-                                behavior: SnackBarBehavior.floating,
-                                content: const Text(
-                                    'Perfil actualizado correctamente'),
-                              ),
-                            );
+                              );
 
-                            _formKey.currentState?.reset();
+                              _formKey.currentState?.reset();
 
-                            Navigator.pushNamed(context, '/profile');
-                          }
-                        },
-                        child: const Text('Actualizar'),
+                              Navigator.pushNamed(context, '/profile');
+                            }
+                          },
+                          child:
+                              const Text('ACTUALIZAR', style: buttonTextStyle),
+                        ),
                       ),
                     ],
                   ),
