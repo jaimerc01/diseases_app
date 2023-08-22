@@ -72,11 +72,13 @@
     "mostrar_historial": "Mostrar rexistro",
     "presione_paciente": "Preme para asignar un paciente",
     "asignado_ok": "Paciente asignado correctamente",
+    "no_hay_pacientes": "Non hai pacientes asginados",
 
     "presione_medico": "Preme para engadir un doutor",
     "doctor_borrado_ok": "Doutor eliminado correctamente",
     "pregunta_borrado_doctor": "Está seguro de que desexa eliminar permanentemente a conta deste doutor?",
     "confirmar_borrado_doctor": "Confirmar eliminación de doutor",
+    "no_hay_medicos": "Non hai doutores rexistrados",
 
     "correctamente_dni": "Introduza correctamente o seu DNI/NIE",
     "ya_registrado": "O seu DNI/NIE xa está rexistrado",

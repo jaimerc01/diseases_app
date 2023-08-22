@@ -72,11 +72,13 @@
     "mostrar_historial": "Mostrar historial",
     "presione_paciente": "Presione para asignar un paciente",
     "asignado_ok": "Paciente asignado correctamente",
+    "no_hay_pacientes": "No hay pacientes asignados",
 
     "presione_medico": "Presione para añadir un médico",
     "doctor_borrado_ok": "Doctor borrado correctamente",
     "pregunta_borrado_doctor": "¿Está seguro de que desea eliminar la cuenta de este doctor permanentemente?",
     "confirmar_borrado_doctor": "Confirmar borrado de doctor",
+    "no_hay_medicos": "No hay médicos registrados",
 
 
     "correctamente_dni": "Introduzca correctamente su DNI/NIE",

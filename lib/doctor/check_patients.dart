@@ -113,69 +113,80 @@ class _CheckPatientsState extends State<CheckPatients> {
         body: Column(
           children: <Widget>[
             Expanded(
-              child: ListView.builder(
-                  itemCount: _box.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 5,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.fromLTRB(5.0, 20.0, 0.0, 0.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  'DNI/NIE: ${_box.getAt(index)['dni']}',
-                                  style: const TextStyle(fontSize: 17.0),
-                                ),
-                                Text(
-                                  // ignore: lines_longer_than_80_chars
-                                  '${AppLocalizations.of(context).nombre}: ${_box.getAt(index)['name']}',
-                                  style: const TextStyle(fontSize: 17.0),
-                                ),
-                                Text(
-                                  // ignore: lines_longer_than_80_chars
-                                  '${AppLocalizations.of(context).correo_electronico}: ${_box.getAt(index)['email']}',
-                                  style: const TextStyle(fontSize: 17.0),
-                                ),
-                              ],
-                            ),
-                          ),
+              child: (_box.isEmpty)
+                  ? Center(
+                      child: Text(
+                        AppLocalizations.of(context).no_hay_pacientes,
+                        textDirection: TextDirection.ltr,
+                        style: const TextStyle(
+                          fontSize: 26,
+                          color: pantoneBlueVeryPeryVariant,
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.view_list,
-                              color: pantoneBlueVeryPeryVariant,
-                              semanticLabel: AppLocalizations.of(context)
-                                  .mostrar_historial,
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: _box.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    5.0, 20.0, 0.0, 0.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      'DNI/NIE: ${_box.getAt(index)['dni']}',
+                                      style: const TextStyle(fontSize: 17.0),
+                                    ),
+                                    Text(
+                                      // ignore: lines_longer_than_80_chars
+                                      '${AppLocalizations.of(context).nombre}: ${_box.getAt(index)['name']}',
+                                      style: const TextStyle(fontSize: 17.0),
+                                    ),
+                                    Text(
+                                      // ignore: lines_longer_than_80_chars
+                                      '${AppLocalizations.of(context).correo_electronico}: ${_box.getAt(index)['email']}',
+                                      style: const TextStyle(fontSize: 17.0),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                            onPressed: () => {
-                              checkHistory(index),
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.delete,
-                              color: pantoneBlueVeryPeryVariant,
-                              semanticLabel: AppLocalizations.of(context)
-                                  .desasignar_pacientes,
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.view_list,
+                                  color: pantoneBlueVeryPeryVariant,
+                                  semanticLabel: AppLocalizations.of(context)
+                                      .mostrar_historial,
+                                ),
+                                onPressed: () => {
+                                  checkHistory(index),
+                                },
+                              ),
                             ),
-                            onPressed: () => {
-                              _unassignPatient(index),
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
+                            Expanded(
+                              flex: 1,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: pantoneBlueVeryPeryVariant,
+                                  semanticLabel: AppLocalizations.of(context)
+                                      .desasignar_pacientes,
+                                ),
+                                onPressed: () => {
+                                  _unassignPatient(index),
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
             ),
           ],
         ),

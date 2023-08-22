@@ -20,6 +20,16 @@ class _ProfileState extends State<Profile> {
   final _boxPatients = Hive.box('patients');
   final _boxAdmins = Hive.box('admins');
   final _boxDoctors = Hive.box('doctors');
+  final _boxHistory = Hive.box('history');
+
+  void _deleteResults(dni) {
+    int index;
+    for (index = 0; index < _boxHistory.length; index++) {
+      if (_boxHistory.getAt(index)['dni'] == dni) {
+        _boxHistory.deleteAt(index);
+      }
+    }
+  }
 
   List<Widget> _getUserDetails(var dni, var name, var email,
       [var collegiateNumber]) {
@@ -93,6 +103,7 @@ class _ProfileState extends State<Profile> {
                       onPressed: () {
                         Navigator.pushReplacementNamed(context, '/login');
                         if (_boxPatients.containsKey(dni)) {
+                          _deleteResults(dni);
                           _boxPatients.delete(dni);
                         } else {
                           _boxDoctors.delete(dni);

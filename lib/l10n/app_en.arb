@@ -72,11 +72,13 @@
     "mostrar_historial": "Show history",
     "presione_paciente": "Press to assign a patient",
     "asignado_ok": "Patient assigned successfully",
+    "no_hay_pacientes": "There are no patients assigned",
 
     "presione_medico": "Press to add a doctor",
     "doctor_borrado_ok": "Doctor deleted successfully",
     "pregunta_borrado_doctor": "Are you sure you want to permanently delete this doctor account?",
     "confirmar_borrado_doctor": "Confirm doctor deletion",
+    "no_hay_medicos": "There are no doctors registered",
     
     "correctamente_dni": "Enter your DNI/NIE correctly",
     "ya_registrado": "Your DNI/NIE is already registered",
