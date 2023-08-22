@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../styles.dart';
 import '../widget/drawer_app.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CheckPatients extends StatefulWidget {
   final String? title;
@@ -18,10 +19,6 @@ class _CheckPatientsState extends State<CheckPatients> {
   final _boxPatients = Hive.box('patients');
   final _box = Hive.box('doctorPatients');
   final List<String> _contenido = [];
-  //List<dynamic> _searched = [];
-  //final List<dynamic> _patients = [];
-
-  //final TextEditingController _controller = TextEditingController();
 
   void _checkPatients() {
     int index;
@@ -31,8 +28,6 @@ class _CheckPatientsState extends State<CheckPatients> {
       if (_boxLogin.get('dni') == _boxPatients.getAt(index)['doctor']) {
         _box.add(_boxPatients.getAt(index));
         _contenido.add('${_boxPatients.getAt(index)['dni']}');
-        //_searched.add(_boxPatients.getAt(index));
-        //_patients.add(_boxPatients.getAt(index));
       }
     }
   }
@@ -57,18 +52,18 @@ class _CheckPatientsState extends State<CheckPatients> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Desasignar Paciente'),
-          content: const Text(
-              '¿Estás seguro de que deseas desasignar este paciente?'),
+          title: Text(AppLocalizations.of(context).desasignar_pacientes),
+          content:
+              Text(AppLocalizations.of(context).pregunta_desasignar_pacientes),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancelar'),
+              child: Text(AppLocalizations.of(context).boton_cancelar),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('Desasignar'),
+              child: Text(AppLocalizations.of(context).boton_desasignar),
               onPressed: () {
                 int i;
                 for (i = 0; i < _boxPatients.length; i++) {
@@ -94,8 +89,9 @@ class _CheckPatientsState extends State<CheckPatients> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     behavior: SnackBarBehavior.floating,
-                    content: const Center(
-                      child: Text('Paciente desasignado'),
+                    content: Center(
+                      child: Text(
+                          AppLocalizations.of(context).paciente_desasignado),
                     ),
                   ),
                 );
@@ -107,36 +103,6 @@ class _CheckPatientsState extends State<CheckPatients> {
     );
   }
 
-  /*int i;
-    for (i = 0; i < _boxPatients.length; i++) {
-      if (_boxPatients.getAt(i)['dni'] == _contenido[index]) {
-        _boxPatients.put(_contenido[index], {
-          'dni': _contenido[index],
-          'password': _boxPatients.getAt(i)['password'],
-          'email': _boxPatients.getAt(i)['email'],
-          'name': _boxPatients.getAt(i)['name'],
-          'doctor': '0',
-        });
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => super.widget));
-      }
-    }
-  }*/
-
-  /*void _searchPatient(String value) {
-    var results = <dynamic>[];
-    if (value.isEmpty) {
-      results = _patients;
-    } else {
-      for (var i = 0; _box.length > i; i++) {
-        if (_box.getAt(i)['dni'].toString().contains(value)) {
-          results.add(_box.getAt(i));
-        }
-      }
-    }
-    setState((){_searched = results;});
-  }*/
-
   @override
   Widget build(BuildContext context) {
     _checkPatients();
@@ -146,21 +112,6 @@ class _CheckPatientsState extends State<CheckPatients> {
         drawer: const DrawerApp(drawerValue: 5),
         body: Column(
           children: <Widget>[
-            /*Container(
-              margin: const EdgeInsets.fromLTRB(5.0, 20.0, 5.0, 5.0),
-              child: TextField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: 'dni',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(color: pantoneBlueVeryPery),
-                  ),
-                ),
-                //onChanged: (value) => _searchPatient(value),
-              ),
-            ),*/
             Expanded(
               child: ListView.builder(
                   itemCount: _box.length,
@@ -177,17 +128,17 @@ class _CheckPatientsState extends State<CheckPatients> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  'DNI/NIF: ${_box.getAt(index)['dni']}',
+                                  'DNI/NIE: ${_box.getAt(index)['dni']}',
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                                 Text(
                                   // ignore: lines_longer_than_80_chars
-                                  'Nombre completo: ${_box.getAt(index)['name']}',
+                                  '${AppLocalizations.of(context).nombre}: ${_box.getAt(index)['name']}',
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                                 Text(
                                   // ignore: lines_longer_than_80_chars
-                                  'Correo electrónico: ${_box.getAt(index)['email']}',
+                                  '${AppLocalizations.of(context).correo_electronico}: ${_box.getAt(index)['email']}',
                                   style: const TextStyle(fontSize: 17.0),
                                 ),
                               ],
@@ -197,10 +148,11 @@ class _CheckPatientsState extends State<CheckPatients> {
                         Expanded(
                           flex: 1,
                           child: IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.view_list,
                               color: pantoneBlueVeryPeryVariant,
-                              semanticLabel: 'Mostrar historial',
+                              semanticLabel: AppLocalizations.of(context)
+                                  .mostrar_historial,
                             ),
                             onPressed: () => {
                               checkHistory(index),
@@ -210,10 +162,11 @@ class _CheckPatientsState extends State<CheckPatients> {
                         Expanded(
                           flex: 1,
                           child: IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.delete,
                               color: pantoneBlueVeryPeryVariant,
-                              semanticLabel: 'Desasignar paciente',
+                              semanticLabel: AppLocalizations.of(context)
+                                  .desasignar_pacientes,
                             ),
                             onPressed: () => {
                               _unassignPatient(index),
@@ -229,8 +182,8 @@ class _CheckPatientsState extends State<CheckPatients> {
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: pantoneBlueVeryPeryVariant,
           onPressed: () => Navigator.pushNamed(context, '/assignPatient'),
-          tooltip: 'Presione para asingar un paciente',
-          label: const Text('ASIGNAR PACIENTE'),
+          tooltip: AppLocalizations.of(context).presione_paciente,
+          label: Text(AppLocalizations.of(context).boton_asignar_paciente),
           icon: const Icon(Icons.add),
         ));
   }

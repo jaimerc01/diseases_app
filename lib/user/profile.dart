@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../styles.dart';
 import '../widget/drawer_app.dart';
@@ -24,17 +25,21 @@ class _ProfileState extends State<Profile> {
       [var collegiateNumber]) {
     final userDetails = [
       const SizedBox(height: 150),
-      Text('DNI/NIF: $dni', style: const TextStyle(fontSize: 18)),
+      Text('DNI/NIE: $dni', style: const TextStyle(fontSize: 18)),
       const SizedBox(height: 10),
-      Text('Nombre completo: $name', style: const TextStyle(fontSize: 18)),
+      Text('${AppLocalizations.of(context).nombre}: $name',
+          style: const TextStyle(fontSize: 18)),
       const SizedBox(height: 10),
-      Text('Correo electrónico: $email', style: const TextStyle(fontSize: 18)),
+      Text('${AppLocalizations.of(context).correo_electronico}: $email',
+          style: const TextStyle(fontSize: 18)),
     ];
 
     if (collegiateNumber != null) {
       userDetails.addAll([
         const SizedBox(height: 10),
-        Text('Número de colegiado: $collegiateNumber',
+        Text(
+            // ignore: lines_longer_than_80_chars
+            '${AppLocalizations.of(context).numero_colegiado}: $collegiateNumber',
             style: const TextStyle(fontSize: 18)),
       ]);
     }
@@ -51,7 +56,8 @@ class _ProfileState extends State<Profile> {
             ),
           ),
           onPressed: () => Navigator.pushNamed(context, '/updateProfile'),
-          child: const Text('ACTUALIZAR DATOS', style: buttonTextStyle),
+          child: Text(AppLocalizations.of(context).boton_actualizar,
+              style: buttonTextStyle),
         ),
       ),
       Row(
@@ -61,7 +67,7 @@ class _ProfileState extends State<Profile> {
             onPressed: () {
               Navigator.pushNamed(context, '/password');
             },
-            child: const Text('Cambiar contraseña'),
+            child: Text(AppLocalizations.of(context).cambiar_contrasena),
           ),
         ],
       ),
@@ -73,19 +79,17 @@ class _ProfileState extends State<Profile> {
               showDialog(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  title: const Text('Confirmar borrado de cuenta'),
-                  content: const Text(
-                      // ignore: lines_longer_than_80_chars
-                      '¿Está seguro de que desea borrar su cuenta permanentemente?'),
+                  title: Text(AppLocalizations.of(context).confirmar_borrado),
+                  content: Text(AppLocalizations.of(context).pregunta_borrado),
                   actions: <Widget>[
                     TextButton(
-                      child: const Text('CANCELAR'),
+                      child: Text(AppLocalizations.of(context).boton_cancelar),
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
                     ),
                     TextButton(
-                      child: const Text('CONFIRMAR'),
+                      child: Text(AppLocalizations.of(context).boton_confirmar),
                       onPressed: () {
                         Navigator.pushReplacementNamed(context, '/login');
                         if (_boxPatients.containsKey(dni)) {
@@ -102,8 +106,9 @@ class _ProfileState extends State<Profile> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             behavior: SnackBarBehavior.floating,
-                            content: const Center(
-                              child: Text('Cuenta borrada correctamente'),
+                            content: Center(
+                              child:
+                                  Text(AppLocalizations.of(context).borrado_ok),
                             ),
                           ),
                         );
@@ -113,7 +118,7 @@ class _ProfileState extends State<Profile> {
                 ),
               );
             },
-            child: const Text('Borrar cuenta'),
+            child: Text(AppLocalizations.of(context).borrar_cuenta),
           ),
         ],
       ),
@@ -132,12 +137,14 @@ class _ProfileState extends State<Profile> {
       final admin = _boxAdmins.get(dni);
       return [
         const SizedBox(height: 150),
-        Text('DNI/NIF: $dni', style: const TextStyle(fontSize: 18)),
+        Text('DNI/NIE: $dni', style: const TextStyle(fontSize: 18)),
         const SizedBox(height: 10),
-        Text('Nombre completo: ${admin['name']}',
+        Text('${AppLocalizations.of(context).nombre}: ${admin['name']}',
             style: const TextStyle(fontSize: 18)),
         const SizedBox(height: 10),
-        Text('Correo electrónico: ${admin['email']}',
+        Text(
+            // ignore: lines_longer_than_80_chars
+            '${AppLocalizations.of(context).correo_electronico}: ${admin['email']}',
             style: const TextStyle(fontSize: 18)),
       ];
     } else {

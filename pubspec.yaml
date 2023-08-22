@@ -43,7 +43,10 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_secure_storage: ^8.0.0
   dni_nie_validator: ^0.0.2
-  intl: ^0.18.1
+  intl: ^0.18.0
+  crypto: ^3.0.1
+  flutter_localizations:
+    sdk: flutter
   #encrypt: ^5.0.1
 
 dev_dependencies:
@@ -54,6 +57,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  generate: true
  
   assets:
     - assets/

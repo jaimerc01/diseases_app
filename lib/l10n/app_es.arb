@@ -1,0 +1,96 @@
+{
+    "titulo_registro": "Cree su cuenta personal",
+    "titulo_inicio_sesion": "Inicie sesión en su cuenta",
+    "titulo_inicio": "Bienvenido de nuevo",
+    "titulo_clasificador": "Clasificador de enfermedades",
+
+    "boton_registrarse": "REGISTRARSE",
+    "boton_iniciar_sesion": "INICIAR SESIÓN",
+    "boton_galeria": "ABRIR GALERÍA",
+    "boton_actualizar": "ACTUALIZAR DATOS",
+    "boton_confirmar": "CONFIRMAR",
+    "boton_cancelar": "CANCELAR",
+    "boton_actualizar2": "ACTUALIZAR",
+    "boton_modificar_contrasena": "MODIFICAR CONTRASEÑA",
+    "boton_desasignar": "DESASIGNAR",
+    "boton_asignar_paciente": "ASIGNAR PACIENTE",
+    "boton_anadir_medico": "AÑADIR MÉDICO",
+
+    "correo_electronico": "Correo electrónico",
+    "nombre": "Nombre completo",
+    "contrasena": "Contraseña",
+    "confirmar_contrasena": "Confirmar contraseña",
+    "contrasena_actual": "Contraseña actual",
+    "nueva_contrasena": "Nueva contraseña",
+    "confirmar_nueva_contrasena": "Confirmar nueva contraseña",
+    "dni_paciente": "DNI/NIE del paciente",
+
+    "numero_colegiado": "Número de colegiado",
+
+    "pregunta_inicio_sesion": "¿No tienes cuenta?",
+    "pregunta_registro": "¿Ya tiene cuenta?",
+    "iniciar_sesion": "Iniciar sesión",
+    "registrarse": "Registrarse",
+    "registro_ok": "Registrado correctamente",
+
+    "introduzca_dni": "Introduzca su DNI/NIE",
+    "introduzca_correo": "Introduzca su correo electrónico",
+    "introduzca_nombre": "Introduzca su nombre completo",
+    "introduzca_contrasena": "Introduzca una contraseña",
+    "introduzca_actual_contrasena": "Introduzca la actual contraseña",
+    "introduzca_dni_paciente": "Introduzca el DNI/NIE del paciente",
+    "introduzca_numero_colegiado": "Introduzca su número de colegiado",
+
+    "drawer_inicio": "Inicio",
+    "drawer_clasificador": "Clasificador",
+    "drawer_historial": "Historial",
+    "drawer_doctores": "Consultar doctores",
+    "drawer_pacientes": "Consultar pacientes",
+    "drawer_perfil": "Perfil",
+    "drawer_cerrar_sesion": "Cerrar sesión",
+
+    "precision": "Precisión",
+    "seleccione_foto": "Seleccione una foto",
+
+    "cambiar_contrasena": "Cambiar contraseña",
+    "confirmar_borrado": "Confirmar borrado de cuenta",
+    "pregunta_borrado": "¿Está seguro de que desea borrar su cuenta permanentemente?",
+    "borrado_ok": "Cuenta borrada correctamente",
+    "borrar_cuenta": "Borrar cuenta",
+
+    "actualizado_ok": "Perfil actualizado correctamente",
+
+    "confirmar_borrado_elemento": "Confirmar borrado",
+    "borrado_elemento_ok": "Elemento borrado correctamente",
+    "pregunta_borrado_elemento": "¿Está seguro de que desea eliminar este resultado del historial permanentemente?",
+
+    "contrasena_ok": "Contraseña actualizada correctamente",
+
+    "desasignar_pacientes": "Desasignar paciente",
+    "pregunta_desasignar_pacientes": "¿Está seguro de que desea desasignar este paciente?",
+    "paciente_desasignado": "Paciente desasignado",
+    "mostrar_historial": "Mostrar historial",
+    "presione_paciente": "Presione para asignar un paciente",
+    "asignado_ok": "Paciente asignado correctamente",
+
+    "presione_medico": "Presione para añadir un médico",
+    "doctor_borrado_ok": "Doctor borrado correctamente",
+    "pregunta_borrado_doctor": "¿Está seguro de que desea eliminar la cuenta de este doctor permanentemente?",
+    "confirmar_borrado_doctor": "Confirmar borrado de doctor",
+
+
+    "correctamente_dni": "Introduzca correctamente su DNI/NIE",
+    "ya_registrado": "Su DNI/NIE ya está registrado",
+    "no_registrado": "Su DNI/NIE no está registrado",
+    "no_valido_correo": "Correo electrónico no válido",
+    "tamano_dni": "El tamaño no coincide con el de un DNI/NIE",
+    "tamano_contrasena": "La contraseña debe tener al menos 8 caracteres",
+    "no_coincide_contrasena": "La contraseña no coincide",
+    "incorrecta_contrasena": "Contraseña incorrecta",
+    "no_reconocido": "No se ha reconocido",
+    "correctamente_dni_paciente": "Introduzca correctamente el DNI/NIE del paciente",
+    "no_registrado_dni_paciente": "El DNI/NIE del paciente no está registrado",
+    "paciente_ya_asignado": "El paciente ya tiene un médico asignado",
+    "tamano_numero_colegiado": "El tamaño no coincide con el de un número de colegiado",
+    "ya_registrado_numero_colegiado": "Su número de colegiado ya está registrado"
+}

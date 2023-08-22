@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../widget/drawer_app.dart';
 import '../styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class History extends StatefulWidget {
   final String? title;
@@ -29,25 +30,23 @@ class _HistoryState extends State<History> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmar borrado'),
-          content: const SingleChildScrollView(
+          title: Text(AppLocalizations.of(context).pregunta_borrado_elemento),
+          content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(
-                    // ignore: lines_longer_than_80_chars
-                    '¿Estás seguro de que deseas eliminar este resultado del historial permanentemente?'),
+                Text(AppLocalizations.of(context).pregunta_borrado_elemento),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('CANCELAR'),
+              child: Text(AppLocalizations.of(context).boton_cancelar),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-                child: const Text('CONFIRMAR'),
+                child: Text(AppLocalizations.of(context).boton_confirmar),
                 onPressed: () {
                   _deleteResult(index);
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -58,8 +57,9 @@ class _HistoryState extends State<History> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       behavior: SnackBarBehavior.floating,
-                      content: const Center(
-                        child: Text('Elemento borrado correctamente'),
+                      content: Center(
+                        child: Text(
+                            AppLocalizations.of(context).borrado_elemento_ok),
                       ),
                     ),
                   );

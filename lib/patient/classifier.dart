@@ -26,7 +26,6 @@ class Classifier {
       final model = await _loadModel(modelFileName);
       return Classifier._(labels: labels, model: model);
     } catch (e) {
-      debugPrint('No se pudo cargar el clasificador: ${e.toString()}');
       if (e is Error) {
         debugPrintStack(stackTrace: e.stackTrace);
       }

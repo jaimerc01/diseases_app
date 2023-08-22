@@ -23,3 +23,11 @@ class EncryptPassword {
   }
 }
 */
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+
+String encryptPassword(String password) {
+  final bytes = utf8.encode(password); // Convertir contraseña a bytes
+  final digest = sha256.convert(bytes); // Encriptar bytes usando SHA-256
+  return digest.toString(); // Retornar la contraseña encriptada
+}

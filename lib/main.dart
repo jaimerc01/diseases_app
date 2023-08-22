@@ -16,6 +16,8 @@ import 'doctor/check_patients.dart';
 import 'doctor/assign_patients.dart';
 import 'user/change_password.dart';
 import 'styles.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,17 @@ class MyApp extends StatelessWidget {
             seedColor: pantoneBlueVeryPeryVariant,
           ),
         ),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('es'),
+          Locale('gl'),
+        ],
         initialRoute: Login.routeName,
         routes: {
           Dashboard.routeName: (context) => const Dashboard(title: 'Inicio'),
@@ -97,7 +110,7 @@ Future<void> _initHive() async {
     'name': 'Admin',
   });
 
-  final doctorBox = Hive.box('doctors');
+  /*final doctorBox = Hive.box('doctors');
   await doctorBox.put('32727485A', {
     'dni': '32727485A',
     'collegiateNumber': '123456789',
@@ -127,5 +140,5 @@ Future<void> _initHive() async {
     'email': 'paciente2@paciente2.com',
     'name': 'paciente 2',
     'doctor': '0',
-  });
+  });*/
 }

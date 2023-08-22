@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../styles.dart';
 
@@ -23,8 +24,8 @@ class _DrawerAppState extends State<DrawerApp> {
           Icons.home,
           color: Colors.white,
         ),
-        title: const Text(
-          'Inicio',
+        title: Text(
+          AppLocalizations.of(context).drawer_inicio,
           style: drawerTextStyle,
         ),
         selected: (0 == widget.drawerValue),
@@ -40,8 +41,8 @@ class _DrawerAppState extends State<DrawerApp> {
             Icons.add,
             color: Colors.white,
           ),
-          title: const Text(
-            'Clasificador',
+          title: Text(
+            AppLocalizations.of(context).drawer_clasificador,
             style: drawerTextStyle,
           ),
           selected: (1 == widget.drawerValue),
@@ -54,8 +55,8 @@ class _DrawerAppState extends State<DrawerApp> {
             Icons.history,
             color: Colors.white,
           ),
-          title: const Text(
-            'Historial',
+          title: Text(
+            AppLocalizations.of(context).drawer_historial,
             style: drawerTextStyle,
           ),
           selected: (3 == widget.drawerValue),
@@ -71,8 +72,8 @@ class _DrawerAppState extends State<DrawerApp> {
             Icons.history,
             color: Colors.white,
           ),
-          title: const Text(
-            'Consultar doctores',
+          title: Text(
+            AppLocalizations.of(context).drawer_doctores,
             style: drawerTextStyle,
           ),
           selected: (4 == widget.drawerValue),
@@ -87,8 +88,8 @@ class _DrawerAppState extends State<DrawerApp> {
           Icons.list_alt_outlined,
           color: Colors.white,
         ),
-        title: const Text(
-          'Consultar pacientes',
+        title: Text(
+          AppLocalizations.of(context).drawer_pacientes,
           style: drawerTextStyle,
         ),
         selected: (5 == widget.drawerValue),
@@ -104,8 +105,8 @@ class _DrawerAppState extends State<DrawerApp> {
           Icons.person,
           color: Colors.white,
         ),
-        title: const Text(
-          'Perfil',
+        title: Text(
+          AppLocalizations.of(context).drawer_perfil,
           style: drawerTextStyle,
         ),
         selected: (2 == widget.drawerValue),
@@ -118,8 +119,8 @@ class _DrawerAppState extends State<DrawerApp> {
           Icons.logout,
           color: Colors.white,
         ),
-        title: const Text(
-          'Cerrar sesión',
+        title: Text(
+          AppLocalizations.of(context).drawer_cerrar_sesion,
           style: drawerTextStyle,
         ),
         onTap: () {

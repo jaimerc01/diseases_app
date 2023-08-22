@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../styles.dart';
+import 'encrypt_password.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widget/drawer_app.dart';
 
@@ -76,7 +78,7 @@ class _ChangePassword extends State<ChangePassword> {
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                       errorStyle: errorTextStyle,
-                      labelText: 'Contraseña actual',
+                      labelText: AppLocalizations.of(context).contrasena_actual,
                       prefixIcon: const Icon(Icons.password_outlined),
                       suffixIcon: IconButton(
                           onPressed: () {
@@ -96,19 +98,22 @@ class _ChangePassword extends State<ChangePassword> {
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Introduzca la actual contraseña';
+                        return AppLocalizations.of(context)
+                            .introduzca_actual_contrasena;
                       } else if (_boxPatients
                           .containsKey(_boxLogin.get('dni'))) {
-                        if (value !=
+                        if (encryptPassword(value) !=
                             _boxPatients
                                 .get(_boxLogin.get('dni'))['password']) {
-                          return 'La contraseña introducida es incorrecta';
+                          return AppLocalizations.of(context)
+                              .incorrecta_contrasena;
                         }
                       } else if (_boxDoctors
                           .containsKey(_boxLogin.get('dni'))) {
-                        if (value !=
+                        if (encryptPassword(value) !=
                             _boxDoctors.get(_boxLogin.get('dni'))['password']) {
-                          return 'La contraseña introducida es incorrecta';
+                          return AppLocalizations.of(context)
+                              .incorrecta_contrasena;
                         }
                       }
                       return null;
@@ -125,7 +130,7 @@ class _ChangePassword extends State<ChangePassword> {
                     focusNode: _focusNodeNewPassword,
                     decoration: InputDecoration(
                       errorStyle: errorTextStyle,
-                      labelText: 'Nueva contraseña',
+                      labelText: AppLocalizations.of(context).nueva_contrasena,
                       prefixIcon: const Icon(Icons.password_outlined),
                       suffixIcon: IconButton(
                           onPressed: () {
@@ -145,9 +150,10 @@ class _ChangePassword extends State<ChangePassword> {
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Introduzca una contraseña';
+                        return AppLocalizations.of(context)
+                            .introduzca_contrasena;
                       } else if (value.length < 8) {
-                        return 'La contraseña debe tener al menos 8 caracteres';
+                        return AppLocalizations.of(context).tamano_contrasena;
                       }
                       return null;
                     },
@@ -163,7 +169,8 @@ class _ChangePassword extends State<ChangePassword> {
                     keyboardType: TextInputType.visiblePassword,
                     decoration: InputDecoration(
                       errorStyle: errorTextStyle,
-                      labelText: 'Confirmar nueva contraseña',
+                      labelText: AppLocalizations.of(context)
+                          .confirmar_nueva_contrasena,
                       prefixIcon: const Icon(Icons.password_outlined),
                       suffixIcon: IconButton(
                           onPressed: () {
@@ -183,9 +190,11 @@ class _ChangePassword extends State<ChangePassword> {
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Introduzca su contraseña';
+                        return AppLocalizations.of(context)
+                            .introduzca_contrasena;
                       } else if (value != _controllerNewPassword.text) {
-                        return 'La contraseña no coincide';
+                        return AppLocalizations.of(context)
+                            .no_coincide_contrasena;
                       }
                       return null;
                     },
@@ -208,8 +217,8 @@ class _ChangePassword extends State<ChangePassword> {
                                   .containsKey(_boxLogin.get('dni'))) {
                                 _boxPatients.put(_dni, {
                                   'dni': _dni,
-                                  'password':
-                                      _controllerConfirmNewPassword.text,
+                                  'password': encryptPassword(
+                                      _controllerConfirmNewPassword.text),
                                   'email': _email,
                                   'name': _name,
                                   'doctor': _patientDoctor,
@@ -217,8 +226,8 @@ class _ChangePassword extends State<ChangePassword> {
                               } else {
                                 _boxDoctors.put(_dni, {
                                   'dni': _dni,
-                                  'password':
-                                      _controllerConfirmNewPassword.text,
+                                  'password': encryptPassword(
+                                      _controllerConfirmNewPassword.text),
                                   'email': _email,
                                   'name': _name,
                                   'collegiateNumber': _doctorCollegiateNumber,
@@ -234,9 +243,9 @@ class _ChangePassword extends State<ChangePassword> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   behavior: SnackBarBehavior.floating,
-                                  content: const Center(
-                                    child: Text(
-                                        'Contraseña modificada correctamente'),
+                                  content: Center(
+                                    child: Text(AppLocalizations.of(context)
+                                        .contrasena_ok),
                                   ),
                                 ),
                               );
@@ -246,8 +255,9 @@ class _ChangePassword extends State<ChangePassword> {
                               Navigator.pushNamed(context, '/profile');
                             }
                           },
-                          child: const Text(
-                            'MODIFICAR CONTRASEÑA',
+                          child: Text(
+                            AppLocalizations.of(context)
+                                .boton_modificar_contrasena,
                             style: buttonTextStyle,
                           ),
                         ),

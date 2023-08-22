@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../widget/drawer_app.dart';
 import '../styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CheckDoctors extends StatefulWidget {
   final String? title;
@@ -20,19 +21,17 @@ class _CheckDoctorsState extends State<CheckDoctors> {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: const Text('Confirmación borrado de doctor'),
-        content: const Text(
-            // ignore: lines_longer_than_80_chars
-            '¿Está seguro de que desea borrar la cuenta de este doctor permanentemente?'),
+        title: Text(AppLocalizations.of(context).confirmar_borrado_doctor),
+        content: Text(AppLocalizations.of(context).pregunta_borrado_doctor),
         actions: [
           TextButton(
-            child: const Text('CANCELAR'),
+            child: Text(AppLocalizations.of(context).boton_cancelar),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           TextButton(
-            child: const Text('CONFIRMAR'),
+            child: Text(AppLocalizations.of(context).boton_confirmar),
             onPressed: () {
               _boxDoctors.deleteAt(index);
               Navigator.of(context).pop();
@@ -48,8 +47,8 @@ class _CheckDoctorsState extends State<CheckDoctors> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   behavior: SnackBarBehavior.floating,
-                  content: const Center(
-                    child: Text('Doctor borrado correctamente'),
+                  content: Center(
+                    child: Text(AppLocalizations.of(context).doctor_borrado_ok),
                   ),
                 ),
               );
@@ -82,22 +81,22 @@ class _CheckDoctorsState extends State<CheckDoctors> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              'DNI/NIF: ${_boxDoctors.getAt(index)['dni']}',
+                              'DNI/NIE: ${_boxDoctors.getAt(index)['dni']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                             Text(
                               // ignore: lines_longer_than_80_chars
-                              'Nombre completo: ${_boxDoctors.getAt(index)['name']}',
+                              '${AppLocalizations.of(context).nombre}: ${_boxDoctors.getAt(index)['name']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                             Text(
                               // ignore: lines_longer_than_80_chars
-                              'Número de colegiado: ${_boxDoctors.getAt(index)['collegiateNumber']}',
+                              '${AppLocalizations.of(context).numero_colegiado}: ${_boxDoctors.getAt(index)['collegiateNumber']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                             Text(
                               // ignore: lines_longer_than_80_chars
-                              'Correo electrónico: ${_boxDoctors.getAt(index)['email']}',
+                              '${AppLocalizations.of(context).correo_electronico}: ${_boxDoctors.getAt(index)['email']}',
                               style: const TextStyle(fontSize: 17.0),
                             ),
                           ],
@@ -123,8 +122,8 @@ class _CheckDoctorsState extends State<CheckDoctors> {
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: pantoneBlueVeryPeryVariant,
           onPressed: () => Navigator.pushNamed(context, '/addDoctor'),
-          tooltip: 'Presione para añadir un doctor',
-          label: const Text('AÑADIR DOCTOR'),
+          tooltip: AppLocalizations.of(context).presione_medico,
+          label: Text(AppLocalizations.of(context).boton_anadir_medico),
           icon: const Icon(Icons.add),
         ));
   }

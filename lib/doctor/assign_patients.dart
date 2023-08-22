@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../styles.dart';
 import '../widget/drawer_app.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AssingPatient extends StatefulWidget {
   final String? title;
@@ -42,7 +43,7 @@ class _AssingPatientState extends State<AssingPatient> {
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   errorStyle: errorTextStyle,
-                  labelText: 'DNI/NIE del paciente',
+                  labelText: AppLocalizations.of(context).dni_paciente,
                   prefixIcon: const Icon(Icons.credit_card),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -53,17 +54,19 @@ class _AssingPatientState extends State<AssingPatient> {
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca el DNI/NIE cel paciente';
+                    return AppLocalizations.of(context).introduzca_dni_paciente;
                   } else if (value.length != 9) {
-                    return 'El tamaño no coincide con el de un DNI/NIE';
+                    return AppLocalizations.of(context).tamano_dni;
                   } else if (!value.isValidDNI() && !value.isValidNIE()) {
-                    return 'Introduzca correctamente el DNI/NIE del paciente';
+                    return AppLocalizations.of(context)
+                        .correctamente_dni_paciente;
                   } else if (!_boxPatients.containsKey(value)) {
-                    return 'El DNI/NIE del paciente no está registrado';
+                    return AppLocalizations.of(context)
+                        .no_registrado_dni_paciente;
                   } else if (_boxPatients.get(value)['doctor'] != '0' &&
                       _boxDoctor
                           .containsKey(_boxPatients.get(value)['doctor'])) {
-                    return 'El paciente ya tiene un médico asignado';
+                    return AppLocalizations.of(context).paciente_ya_asignado;
                   }
 
                   return null;
@@ -103,8 +106,9 @@ class _AssingPatientState extends State<AssingPatient> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               behavior: SnackBarBehavior.floating,
-                              content: const Center(
-                                child: Text('Paciente asignado correctamente'),
+                              content: Center(
+                                child: Text(
+                                    AppLocalizations.of(context).asignado_ok),
                               ),
                             ),
                           );
@@ -114,7 +118,8 @@ class _AssingPatientState extends State<AssingPatient> {
                           Navigator.pushNamed(context, '/patients');
                         }
                       },
-                      child: const Text('ASIGNAR PACIENTE',
+                      child: Text(
+                          (AppLocalizations.of(context).boton_asignar_paciente),
                           style: buttonTextStyle),
                     ),
                   ),

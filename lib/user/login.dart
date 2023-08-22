@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../styles.dart';
-//import 'encrypt_password.dart';
+import 'encrypt_password.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -25,7 +26,6 @@ class _LoginState extends State<Login> {
   final _boxPatientHistory = Hive.box('patientHistory');
   final _boxAdmins = Hive.box('admins');
   final _boxDoctors = Hive.box('doctors');
-  //late String? _encryptedPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +43,8 @@ class _LoginState extends State<Login> {
           child: Column(
             children: [
               const SizedBox(height: 150),
-              const Text(
-                'Inicie sesión en su cuenta',
+              Text(
+                AppLocalizations.of(context).titulo_inicio_sesion,
                 style: subtitleTextStyle,
                 textAlign: TextAlign.center,
               ),
@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
-                    labelText: 'DNI/NIF',
+                    labelText: 'DNI/NIE',
                     prefixIcon: const Icon(Icons.credit_card),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -66,11 +66,11 @@ class _LoginState extends State<Login> {
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca su DNI/NIF';
+                    return AppLocalizations.of(context).introduzca_dni;
                   } else if (!_boxPatients.containsKey(value) &&
                       !_boxAdmins.containsKey(value) &&
                       !_boxDoctors.containsKey(value)) {
-                    return 'Su DNI/NIF no está registrado';
+                    return AppLocalizations.of(context).no_registrado;
                   }
 
                   return null;
@@ -84,7 +84,7 @@ class _LoginState extends State<Login> {
                 obscureText: _obscurePassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                    labelText: 'Contraseña',
+                    labelText: AppLocalizations.of(context).contrasena,
                     prefixIcon: const Icon(Icons.password_outlined),
                     suffixIcon: IconButton(
                         onPressed: () {
@@ -103,38 +103,20 @@ class _LoginState extends State<Login> {
                     ),
                     errorStyle: errorTextStyle),
                 validator: (String? value) {
-                  /*
-                  _encryptedPassword = EncryptPassword.encrypt(value);
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca la contraseña';
+                    return AppLocalizations.of(context).introduzca_contrasena;
                   } else if (_boxPatients.containsKey(_controllerDni.text) &&
-                      _encryptedPassword !=
+                      encryptPassword(value) !=
                           _boxPatients.get(_controllerDni.text)['password']) {
-                    return 'Contraseña incorrecta';
-                  } else if (_boxAdmins.containsKey(_controllerDni.text) &&
-                      _encryptedPassword !=
-                          _boxAdmins.get(_controllerDni.text)['password']) {
-                    return 'Contraseña incorrecta';
-                  } else if (_boxDoctors.containsKey(_controllerDni.text) &&
-                      _encryptedPassword !=
-                          _boxDoctors.get(_controllerDni.text)['password']) {
-                    return 'Contraseña incorrecta';
-                  }*/
-
-                  if (value == null || value.isEmpty) {
-                    return 'Introduzca la contraseña';
-                  } else if (_boxPatients.containsKey(_controllerDni.text) &&
-                      value !=
-                          _boxPatients.get(_controllerDni.text)['password']) {
-                    return 'Contraseña incorrecta';
+                    return AppLocalizations.of(context).incorrecta_contrasena;
                   } else if (_boxAdmins.containsKey(_controllerDni.text) &&
                       value !=
                           _boxAdmins.get(_controllerDni.text)['password']) {
-                    return 'Contraseña incorrecta';
+                    return AppLocalizations.of(context).incorrecta_contrasena;
                   } else if (_boxDoctors.containsKey(_controllerDni.text) &&
-                      value !=
+                      encryptPassword(value) !=
                           _boxDoctors.get(_controllerDni.text)['password']) {
-                    return 'Contraseña incorrecta';
+                    return AppLocalizations.of(context).incorrecta_contrasena;
                   }
 
                   return null;
@@ -160,8 +142,8 @@ class _LoginState extends State<Login> {
                           Navigator.pushReplacementNamed(context, '/');
                         }
                       },
-                      child: const Text(
-                        'INICIAR SESIÓN',
+                      child: Text(
+                        AppLocalizations.of(context).boton_iniciar_sesion,
                         style: buttonTextStyle,
                       ),
                     ),
@@ -169,8 +151,8 @@ class _LoginState extends State<Login> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'No tienes cuenta?',
+                      Text(
+                        AppLocalizations.of(context).pregunta_inicio_sesion,
                       ),
                       TextButton(
                         onPressed: () {
@@ -178,7 +160,7 @@ class _LoginState extends State<Login> {
 
                           Navigator.pushNamed(context, '/signup');
                         },
-                        child: const Text('Registrarse'),
+                        child: Text(AppLocalizations.of(context).registrarse),
                       ),
                     ],
                   ),

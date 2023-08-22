@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../widget/drawer_app.dart';
 import '../styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UpdateProfile extends StatefulWidget {
   final String? title;
@@ -72,7 +73,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       errorStyle: errorTextStyle,
-                      labelText: 'Correo electrónico',
+                      labelText:
+                          AppLocalizations.of(context).correo_electronico,
                       prefixIcon: const Icon(Icons.email_outlined),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -83,10 +85,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Introduzca el correo electrónico';
+                        return AppLocalizations.of(context).introduzca_correo;
                       } else if (!(value.contains('@') &&
                           value.contains('.'))) {
-                        return 'Correo electrónico no válido';
+                        return AppLocalizations.of(context).no_valido_correo;
                       }
                       return null;
                     },
@@ -98,7 +100,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     keyboardType: TextInputType.name,
                     decoration: InputDecoration(
                       errorStyle: errorTextStyle,
-                      labelText: 'Nombre completo',
+                      labelText: AppLocalizations.of(context).nombre,
                       prefixIcon: const Icon(Icons.person_outline),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -109,7 +111,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
-                        return 'Introduzca su nombre completo';
+                        return AppLocalizations.of(context).introduzca_nombre;
                       }
                       return null;
                     },
@@ -156,9 +158,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   behavior: SnackBarBehavior.floating,
-                                  content: const Center(
-                                    child: Text(
-                                        'Perfil actualizado correctamente'),
+                                  content: Center(
+                                    child: Text(AppLocalizations.of(context)
+                                        .actualizado_ok),
                                   ),
                                 ),
                               );
@@ -168,8 +170,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                               Navigator.pushNamed(context, '/profile');
                             }
                           },
-                          child:
-                              const Text('ACTUALIZAR', style: buttonTextStyle),
+                          child: Text(
+                              AppLocalizations.of(context).boton_actualizar2,
+                              style: buttonTextStyle),
                         ),
                       ),
                     ],

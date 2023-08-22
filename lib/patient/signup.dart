@@ -2,7 +2,8 @@ import 'package:dni_nie_validator/dni_nie_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../styles.dart';
-//import '../user/encrypt_password.dart';
+import '../user/encrypt_password.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -31,7 +32,6 @@ class _SignupState extends State<Signup> {
   final _boxAdmins = Hive.box('admins');
   final _boxDoctors = Hive.box('doctors');
   bool _obscurePassword = true;
-  //late String? _encryptedPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +44,8 @@ class _SignupState extends State<Signup> {
           child: Column(
             children: [
               const SizedBox(height: 100),
-              const Text(
-                'Cree su cuenta personal',
+              Text(
+                AppLocalizations.of(context).titulo_registro,
                 style: subtitleTextStyle,
                 textAlign: TextAlign.center,
               ),
@@ -66,15 +66,15 @@ class _SignupState extends State<Signup> {
                     errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca su DNI/NIE.';
+                    return AppLocalizations.of(context).introduzca_dni;
                   } else if (value.length != 9) {
-                    return 'El tamaño no coincide con el de un DNI/NIE';
+                    return AppLocalizations.of(context).tamano_dni;
                   } else if (!value.isValidDNI() && !value.isValidNIE()) {
-                    return 'Introduzca correctamente su DNI/NIE';
+                    return AppLocalizations.of(context).correctamente_dni;
                   } else if (_boxPatients.containsKey(value) ||
                       _boxAdmins.containsKey(value) ||
                       _boxDoctors.containsKey(value)) {
-                    return 'Su DNI/NIE ya está registrado';
+                    return AppLocalizations.of(context).ya_registrado;
                   }
 
                   return null;
@@ -88,7 +88,7 @@ class _SignupState extends State<Signup> {
                 focusNode: _focusNodeEmail,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
-                    labelText: 'Correo electrónico',
+                    labelText: AppLocalizations.of(context).correo_electronico,
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -99,9 +99,9 @@ class _SignupState extends State<Signup> {
                     errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca su correo electrónico';
+                    return AppLocalizations.of(context).introduzca_correo;
                   } else if (!(value.contains('@') && value.contains('.'))) {
-                    return 'Correo electrónico no válido';
+                    return AppLocalizations.of(context).no_valido_correo;
                   }
                   return null;
                 },
@@ -114,7 +114,7 @@ class _SignupState extends State<Signup> {
                 focusNode: _focusNodeNombre,
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
-                    labelText: 'Nombre completo',
+                    labelText: AppLocalizations.of(context).nombre,
                     prefixIcon: const Icon(Icons.person_outline),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -125,7 +125,7 @@ class _SignupState extends State<Signup> {
                     errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca su nombre completo';
+                    return AppLocalizations.of(context).introduzca_nombre;
                   }
                   return null;
                 },
@@ -139,7 +139,7 @@ class _SignupState extends State<Signup> {
                 focusNode: _focusNodePassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                    labelText: 'Contraseña',
+                    labelText: AppLocalizations.of(context).contrasena,
                     prefixIcon: const Icon(Icons.password_outlined),
                     suffixIcon: IconButton(
                         onPressed: () {
@@ -159,9 +159,9 @@ class _SignupState extends State<Signup> {
                     errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca una contraseña';
+                    return AppLocalizations.of(context).introduzca_contrasena;
                   } else if (value.length < 8) {
-                    return 'La contraseña debe tener al menos 8 caracteres';
+                    return AppLocalizations.of(context).tamano_contrasena;
                   }
                   return null;
                 },
@@ -176,7 +176,8 @@ class _SignupState extends State<Signup> {
                 focusNode: _focusNodeConfirmPassword,
                 keyboardType: TextInputType.visiblePassword,
                 decoration: InputDecoration(
-                    labelText: 'Confirmar contraseña',
+                    labelText:
+                        AppLocalizations.of(context).confirmar_contrasena,
                     prefixIcon: const Icon(Icons.password_outlined),
                     suffixIcon: IconButton(
                         onPressed: () {
@@ -196,9 +197,9 @@ class _SignupState extends State<Signup> {
                     errorStyle: errorTextStyle),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
-                    return 'Introduzca su contraseña';
+                    return AppLocalizations.of(context).introduzca_contrasena;
                   } else if (value != _controllerPassword.text) {
-                    return 'La contraseña no coincide';
+                    return AppLocalizations.of(context).no_coincide_contrasena;
                   }
                   return null;
                 },
@@ -217,13 +218,10 @@ class _SignupState extends State<Signup> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          /*_encryptedPassword = EncryptPassword.encrypt(
-                            _controllerConFirmPassword.text);*/
-
                           _boxPatients.put(_controllerDni.text, {
                             'dni': _controllerDni.text,
-                            'password': _controllerConFirmPassword.text,
-                            //'password': _encryptedPassword,
+                            'password': encryptPassword(
+                                _controllerConFirmPassword.text),
                             'email': _controllerEmail.text,
                             'name': _controllerName.text,
                             'doctor': '0',
@@ -238,8 +236,9 @@ class _SignupState extends State<Signup> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               behavior: SnackBarBehavior.floating,
-                              content: const Center(
-                                child: Text('Registrado correctamente'),
+                              content: Center(
+                                child: Text(
+                                    AppLocalizations.of(context).registro_ok),
                               ),
                             ),
                           );
@@ -249,16 +248,19 @@ class _SignupState extends State<Signup> {
                           Navigator.pushReplacementNamed(context, '/login');
                         }
                       },
-                      child: const Text('REGISTRARSE', style: buttonTextStyle),
+                      child: Text(
+                          AppLocalizations.of(context).boton_registrarse,
+                          style: buttonTextStyle),
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Ya tiene cuenta?'),
+                      Text(AppLocalizations.of(context).pregunta_registro),
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Iniciar sesión'),
+                        child:
+                            Text(AppLocalizations.of(context).iniciar_sesion),
                       ),
                     ],
                   ),

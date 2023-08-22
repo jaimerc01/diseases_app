@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../styles.dart';
 
@@ -15,13 +16,10 @@ class DiseaseImage extends StatelessWidget {
       height: size,
       color: Colors.blueGrey,
       child: (file == null)
-          ? _emptyWidget()
+          ? Center(
+              child: Text(AppLocalizations.of(context).seleccione_foto,
+                  style: imageTextStyle))
           : Image.file(file!, fit: BoxFit.cover),
     );
-  }
-
-  Widget _emptyWidget() {
-    return const Center(
-        child: Text('Seleccione una foto', style: imageTextStyle));
   }
 }

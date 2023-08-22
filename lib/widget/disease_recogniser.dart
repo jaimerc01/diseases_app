@@ -8,6 +8,7 @@ import 'disease_image.dart';
 import 'drawer_app.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const _labelsFileName = 'assets/labels.txt';
 const _modelFileName = 'model_unquant.tflite';
@@ -104,7 +105,7 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     var title = '';
 
     if (_resultStatus == _ResultStatus.notFound) {
-      title = 'No se ha reconocido';
+      title = AppLocalizations.of(context).no_reconocido;
     } else if (_resultStatus == _ResultStatus.found) {
       title = _diseaseLabel;
     } else {
@@ -113,7 +114,9 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
 
     var accuracyLabel = '';
     if (_resultStatus == _ResultStatus.found) {
-      accuracyLabel = 'Precisión: ${(_accuracy * 100).toStringAsFixed(2)}%';
+      accuracyLabel =
+          // ignore: lines_longer_than_80_chars
+          '${AppLocalizations.of(context).precision}: ${(_accuracy * 100).toStringAsFixed(2)}%';
     }
 
     _storeInHistory();
@@ -137,10 +140,10 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 35),
+            Padding(
+              padding: const EdgeInsets.only(top: 35),
               child: Text(
-                'Clasificador de enfermedades',
+                AppLocalizations.of(context).titulo_clasificador,
                 style: titleTextStyle,
                 textAlign: TextAlign.center,
               ),
@@ -165,7 +168,8 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
                   ),
                 ),
                 onPressed: () => _onPickImage(ImageSource.gallery),
-                child: const Text('ABRIR GALERÍA', style: buttonTextStyle),
+                child: Text(AppLocalizations.of(context).boton_galeria,
+                    style: buttonTextStyle),
               ),
             ),
           ],

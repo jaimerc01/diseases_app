@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'drawer_app.dart';
 import '../styles.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Dashboard extends StatefulWidget {
   final String? title;
@@ -30,8 +31,8 @@ class _DashboardState extends State<Dashboard> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 150),
-            const Text(
-              'Bienvenido de nuevo',
+            Text(
+              AppLocalizations.of(context).titulo_inicio,
               style: subtitleTextStyle,
               textAlign: TextAlign.center,
             ),
