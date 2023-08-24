@@ -68,6 +68,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 child: Column(children: [
                   const SizedBox(height: 50),
                   TextFormField(
+                    key: const Key('emailUpdate'),
                     style: formFieldTextStyle,
                     controller: _controllerEmail,
                     keyboardType: TextInputType.emailAddress,
@@ -95,6 +96,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
+                    key: const Key('nameUpdate'),
                     style: formFieldTextStyle,
                     controller: _controllerName,
                     keyboardType: TextInputType.name,

@@ -124,11 +124,11 @@ class _HistoryState extends State<History> {
         body: (contenido.isEmpty &&
                     _boxPatients.containsKey(_boxLogin.get('dni'))) ||
                 (empty == true && _boxDoctors.containsKey(_boxLogin.get('dni')))
-            ? const Center(
+            ? Center(
                 child: Text(
-                  'El historial está vacío',
+                  AppLocalizations.of(context).historial_vacio,
                   textDirection: TextDirection.ltr,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 26,
                     color: pantoneBlueVeryPeryVariant,
                   ),
@@ -162,17 +162,17 @@ class _HistoryState extends State<History> {
                               children: <Widget>[
                                 Text(
                                   // ignore: lines_longer_than_80_chars
-                                  'Fecha: ${_boxPatientHistory.getAt(index)['date']}',
+                                  '${AppLocalizations.of(context).fecha}: ${_boxPatientHistory.getAt(index)['date']}',
                                   style: historyTextStyle,
                                 ),
                                 Text(
                                   // ignore: lines_longer_than_80_chars
-                                  'Resultado: ${_boxPatientHistory.getAt(index)['result']}',
+                                  '${AppLocalizations.of(context).resultado}: ${_boxPatientHistory.getAt(index)['result']}',
                                   style: historyTextStyle,
                                 ),
                                 Text(
                                   // ignore: lines_longer_than_80_chars
-                                  'Precisión: ${(_boxPatientHistory.getAt(index)['accuracy'] * 100).toStringAsFixed(2)}%',
+                                  '${AppLocalizations.of(context).precision}: ${(_boxPatientHistory.getAt(index)['accuracy'] * 100).toStringAsFixed(2)}%',
                                   style: historyTextStyle,
                                 ),
                               ],

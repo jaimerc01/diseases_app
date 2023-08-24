@@ -51,6 +51,7 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 50),
               TextFormField(
+                key: const Key('dniSignup'),
                 style: formFieldTextStyle,
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
@@ -83,6 +84,7 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('emailSignup'),
                 style: formFieldTextStyle,
                 controller: _controllerEmail,
                 focusNode: _focusNodeEmail,
@@ -109,6 +111,7 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('nameSignup'),
                 style: formFieldTextStyle,
                 controller: _controllerName,
                 focusNode: _focusNodeNombre,
@@ -133,6 +136,7 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('passwordSignup'),
                 style: formFieldTextStyle,
                 controller: _controllerPassword,
                 obscureText: _obscurePassword,
@@ -170,6 +174,7 @@ class _SignupState extends State<Signup> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('confirmPasswordSignup'),
                 style: formFieldTextStyle,
                 controller: _controllerConFirmPassword,
                 obscureText: _obscurePassword,

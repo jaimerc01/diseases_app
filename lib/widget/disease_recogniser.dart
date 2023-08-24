@@ -32,7 +32,8 @@ enum _ResultStatus {
 class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   File? _imageFile;
   final picker = ImagePicker();
-  final double _bigSize = 250;
+  double _bigSize(BuildContext context) =>
+      MediaQuery.of(context).size.width * 0.65;
   final _boxHistory = Hive.box('history');
   final _boxLogin = Hive.box('login');
   String _diseaseLabel = '';
@@ -137,42 +138,44 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
       drawer: const DrawerApp(drawerValue: 1),
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 35),
-              child: Text(
-                AppLocalizations.of(context).titulo_clasificador,
-                style: titleTextStyle,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Stack(
-              alignment: AlignmentDirectional.center,
-              children: [
-                DiseaseImage(file: _imageFile, size: _bigSize),
-              ],
-            ),
-            const SizedBox(height: 10),
-            _buildResultView(),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.6,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 0),
+                child: Text(
+                  AppLocalizations.of(context).titulo_clasificador,
+                  style: titleTextStyle,
+                  textAlign: TextAlign.center,
                 ),
-                onPressed: () => _onPickImage(ImageSource.gallery),
-                child: Text(AppLocalizations.of(context).boton_galeria,
-                    style: buttonTextStyle),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  DiseaseImage(file: _imageFile, size: _bigSize(context)),
+                ],
+              ),
+              const SizedBox(height: 10),
+              _buildResultView(),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () => _onPickImage(ImageSource.gallery),
+                  child: Text(AppLocalizations.of(context).boton_galeria,
+                      style: buttonTextStyle),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

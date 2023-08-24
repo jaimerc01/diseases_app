@@ -52,6 +52,7 @@ class _AddDoctorState extends State<AddDoctor> {
             children: [
               const SizedBox(height: 50),
               TextFormField(
+                key: const Key('dniAdd'),
                 style: formFieldTextStyle,
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
@@ -86,6 +87,7 @@ class _AddDoctorState extends State<AddDoctor> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('collegiateNumberAdd'),
                 style: formFieldTextStyle,
                 controller: _controllerCollegiateNumber,
                 keyboardType: TextInputType.text,
@@ -123,6 +125,7 @@ class _AddDoctorState extends State<AddDoctor> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('emailAdd'),
                 style: formFieldTextStyle,
                 controller: _controllerEmail,
                 focusNode: _focusNodeEmail,
@@ -150,6 +153,7 @@ class _AddDoctorState extends State<AddDoctor> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('nameAdd'),
                 style: formFieldTextStyle,
                 controller: _controllerName,
                 focusNode: _focusNodeNombre,
@@ -175,6 +179,7 @@ class _AddDoctorState extends State<AddDoctor> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('passwordAdd'),
                 style: formFieldTextStyle,
                 controller: _controllerPassword,
                 obscureText: _obscurePassword,
@@ -213,6 +218,7 @@ class _AddDoctorState extends State<AddDoctor> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('confirmPasswordAdd'),
                 style: formFieldTextStyle,
                 controller: _controllerConFirmPassword,
                 obscureText: _obscurePassword,

@@ -38,6 +38,7 @@ class _AssingPatientState extends State<AssingPatient> {
             children: [
               const SizedBox(height: 50),
               TextFormField(
+                key: const Key('dniAssign'),
                 style: formFieldTextStyle,
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,

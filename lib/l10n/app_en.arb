@@ -66,6 +66,11 @@
 
     "contrasena_ok": "Password changed successfully",
 
+    "historial_vacio": "History is empty",
+    "fecha": "Date",
+    "resultado": "Result",
+    "precision": "Accuracy",
+
     "desasignar_pacientes": "Unassign patient",
     "pregunta_desasignar_pacientes": "Are you sure you want to unassign this patient?",
     "paciente_desasignado": "Patient unassigned",

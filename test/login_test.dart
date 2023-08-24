@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:diseases_app/patient/signup.dart';
+import 'package:diseases_app/user/login.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -28,16 +28,22 @@ void main() {
   setUp(() async {
     await Hive.initFlutter();
     await Hive.openBox('patients');
+    await Hive.openBox('patientHistory');
     await Hive.openBox('admins');
     await Hive.openBox('doctors');
+    await Hive.openBox('login');
 
     final adminBox = Hive.box('admins');
     final doctorsBox = Hive.box('doctors');
     final patientsBox = Hive.box('patients');
+    final historyBox = Hive.box('patientHistory');
+    final loginBox = Hive.box('login');
 
     await adminBox.clear();
     await doctorsBox.clear();
     await patientsBox.clear();
+    await historyBox.clear();
+    await loginBox.clear();
 
     await adminBox.put('00000000T', {
       'dni': '00000000T',
@@ -45,29 +51,13 @@ void main() {
       'email': 'admin@admin.com',
       'name': 'Admin',
     });
-
-    await patientsBox.put('32738039T', {
-      'dni': '32738039T',
-      'password': 'qwertyui',
-      'email': 'patient@patient.com',
-      'name': 'Patient',
-      'doctor': '0',
-    });
-
-    await doctorsBox.put('12345678Z', {
-      'dni': '12345678Z',
-      'password': '87654321',
-      'email': 'doctor@doctor.com',
-      'name': 'Doctor',
-      'collegiateNumber': '123456789',
-    });
   });
 
   tearDown(() {
     Hive.close();
   });
 
-  testWidgets('La pantalla de signup muestra formulario y errores',
+  testWidgets('La pantalla de login muestra correctamente formulario y errores',
       (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(
       localizationsDelegates: [
@@ -81,50 +71,36 @@ void main() {
         Locale('es'),
         Locale('gl'),
       ],
-      home: Signup(),
+      home: Login(),
     ));
 
     await tester.pumpAndSettle();
 
-    expect(find.text('Create your personal account'), findsOneWidget);
-    expect(find.byType(TextFormField), findsNWidgets(5));
+    expect(find.text('Log in your account'), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(2));
     expect(find.text('DNI/NIE'), findsOneWidget);
     expect(find.text('Password'), findsOneWidget);
-    expect(find.text('Full name'), findsOneWidget);
-    expect(find.text('Password'), findsOneWidget);
-    expect(find.text('Confirm password'), findsOneWidget);
     expect(find.byIcon(Icons.credit_card), findsOneWidget);
-    expect(find.byIcon(Icons.email_outlined), findsOneWidget);
-    expect(find.byIcon(Icons.person_outline), findsOneWidget);
-    expect(find.byIcon(Icons.password_outlined), findsNWidgets(2));
+    expect(find.byIcon(Icons.password_outlined), findsOneWidget);
     expect(find.byType(TextButton), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
 
-    //Hacemos scroll para ver el botón de signup
-    await tester.drag(
-        find.byKey(const Key('passwordSignup')), const Offset(0, -50));
-
-    //Click en el botón de sign up sin datos introducidos
+    //Click en el botón de login sin datos introducidos
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
     expect(find.text('Enter your DNI/NIE'), findsOneWidget);
-    expect(find.text('Enter your email'), findsOneWidget);
-    expect(find.text('Enter your full name'), findsOneWidget);
-    expect(find.text('Enter your password'), findsNWidgets(2));
+    expect(find.text('Enter your password'), findsOneWidget);
 
     //Introducir datos incorrectos
-    /*await tester.enterText(find.byKey(const Key('dniSignup')), '1');
-    await tester.enterText(find.byKey(const Key('emailSignup')), '1');
-    await tester.enterText(find.byKey(const Key('nameSignup')), '1');
-    await tester.enterText(find.byKey(const Key('passwordSignup')), '1');
-    await tester.enterText(find.byKey(const Key('confirmPasswordSignup')), '2');
+    await tester.enterText(find.byKey(const Key('dni')), '12345678');
+    await tester.enterText(find.byKey(const Key('password')), '11111111');
     await tester.tap(find.byType(ElevatedButton));
-    await tester.pumpAndSettle();*/
+    await tester.pumpAndSettle();
+    expect(find.text("Your DNI/NIE isn't registered"), findsOneWidget);
 
-    /*expect(
-        find.text('The size does not match that of a DNI/NIE'), findsOneWidget);
-    expect(find.text('Invalid email'), findsOneWidget);
-    expect(find.text('Password must be at least 8 characters'), findsOneWidget);
-    expect(find.text('Password does not match'), findsOneWidget);*/
+    await tester.enterText(find.byKey(const Key('dni')), '00000000T');
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+    expect(find.text('Wrong password'), findsOneWidget);
   });
 }

@@ -72,6 +72,7 @@ class _ChangePassword extends State<ChangePassword> {
                 child: Column(children: [
                   const SizedBox(height: 50),
                   TextFormField(
+                    key: const Key('currentPassword'),
                     style: formFieldTextStyle,
                     controller: _controllerPassword,
                     obscureText: _obscurePassword,
@@ -123,6 +124,7 @@ class _ChangePassword extends State<ChangePassword> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
+                    key: const Key('newPassword'),
                     style: formFieldTextStyle,
                     controller: _controllerNewPassword,
                     keyboardType: TextInputType.visiblePassword,
@@ -162,6 +164,7 @@ class _ChangePassword extends State<ChangePassword> {
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
+                    key: const Key('confirmPasswordChange'),
                     style: formFieldTextStyle,
                     controller: _controllerConfirmNewPassword,
                     obscureText: _obscurePassword,

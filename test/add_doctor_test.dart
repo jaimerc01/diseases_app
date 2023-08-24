@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:diseases_app/patient/signup.dart';
+import 'package:diseases_app/admin/add_doctor.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -67,7 +67,7 @@ void main() {
     Hive.close();
   });
 
-  testWidgets('La pantalla de signup muestra formulario y errores',
+  testWidgets('La pantalla de add doctor muestra formulario y errores',
       (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(
       localizationsDelegates: [
@@ -81,50 +81,41 @@ void main() {
         Locale('es'),
         Locale('gl'),
       ],
-      home: Signup(),
+      home: AddDoctor(title: 'Add doctor Test'),
     ));
 
     await tester.pumpAndSettle();
 
-    expect(find.text('Create your personal account'), findsOneWidget);
-    expect(find.byType(TextFormField), findsNWidgets(5));
+    expect(find.text('Add doctor Test'), findsOneWidget);
+    expect(find.byType(TextFormField), findsNWidgets(6));
+    expect(find.text('Collegiate number'), findsOneWidget);
     expect(find.text('DNI/NIE'), findsOneWidget);
     expect(find.text('Password'), findsOneWidget);
     expect(find.text('Full name'), findsOneWidget);
     expect(find.text('Password'), findsOneWidget);
     expect(find.text('Confirm password'), findsOneWidget);
-    expect(find.byIcon(Icons.credit_card), findsOneWidget);
+    expect(find.byIcon(Icons.credit_card), findsNWidgets(2));
     expect(find.byIcon(Icons.email_outlined), findsOneWidget);
     expect(find.byIcon(Icons.person_outline), findsOneWidget);
     expect(find.byIcon(Icons.password_outlined), findsNWidgets(2));
-    expect(find.byType(TextButton), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
 
-    //Hacemos scroll para ver el botón de signup
-    await tester.drag(
-        find.byKey(const Key('passwordSignup')), const Offset(0, -50));
-
-    //Click en el botón de sign up sin datos introducidos
+    //Click en el botón de add doctor con datos incorrectos
+    await tester.enterText(find.byKey(const Key('dniAdd')), '1');
+    await tester.enterText(find.byKey(const Key('collegiateNumberAdd')), '1');
+    await tester.enterText(find.byKey(const Key('emailAdd')), '1');
+    await tester.enterText(find.byKey(const Key('nameAdd')), '1');
+    await tester.enterText(find.byKey(const Key('passwordAdd')), '1');
+    await tester.enterText(find.byKey(const Key('confirmPasswordAdd')), '2');
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();
-    expect(find.text('Enter your DNI/NIE'), findsOneWidget);
-    expect(find.text('Enter your email'), findsOneWidget);
-    expect(find.text('Enter your full name'), findsOneWidget);
-    expect(find.text('Enter your password'), findsNWidgets(2));
 
-    //Introducir datos incorrectos
-    /*await tester.enterText(find.byKey(const Key('dniSignup')), '1');
-    await tester.enterText(find.byKey(const Key('emailSignup')), '1');
-    await tester.enterText(find.byKey(const Key('nameSignup')), '1');
-    await tester.enterText(find.byKey(const Key('passwordSignup')), '1');
-    await tester.enterText(find.byKey(const Key('confirmPasswordSignup')), '2');
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pumpAndSettle();*/
-
-    /*expect(
+    expect(
         find.text('The size does not match that of a DNI/NIE'), findsOneWidget);
+    expect(find.text('The size does not match that of a collegiate number'),
+        findsOneWidget);
     expect(find.text('Invalid email'), findsOneWidget);
     expect(find.text('Password must be at least 8 characters'), findsOneWidget);
-    expect(find.text('Password does not match'), findsOneWidget);*/
+    expect(find.text('Password does not match'), findsOneWidget);
   });
 }

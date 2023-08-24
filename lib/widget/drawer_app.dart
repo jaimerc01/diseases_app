@@ -125,7 +125,6 @@ class _DrawerAppState extends State<DrawerApp> {
         ),
         onTap: () {
           _boxLogin.delete(_boxLogin.get('dni'));
-          _boxLogin.put('loginStatus', false);
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),

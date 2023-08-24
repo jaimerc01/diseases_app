@@ -36,7 +36,7 @@
     "introduzca_dni": "Introduzca su DNI/NIE",
     "introduzca_correo": "Introduzca su correo electrónico",
     "introduzca_nombre": "Introduzca su nombre completo",
-    "introduzca_contrasena": "Introduzca una contraseña",
+    "introduzca_contrasena": "Introduzca su contraseña",
     "introduzca_actual_contrasena": "Introduzca la actual contraseña",
     "introduzca_dni_paciente": "Introduzca el DNI/NIE del paciente",
     "introduzca_numero_colegiado": "Introduzca su número de colegiado",
@@ -65,6 +65,11 @@
     "pregunta_borrado_elemento": "¿Está seguro de que desea eliminar este resultado del historial permanentemente?",
 
     "contrasena_ok": "Contraseña actualizada correctamente",
+
+    "historial_vacio": "El historial está vacío",
+    "fecha": "Fecha",
+    "resultado": "Resultado",
+    "precision": "Precisión",
 
     "desasignar_pacientes": "Desasignar paciente",
     "pregunta_desasignar_pacientes": "¿Está seguro de que desea desasignar este paciente?",

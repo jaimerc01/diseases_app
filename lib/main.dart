@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'user/encrypt_password.dart';
 import 'widget/dashboard.dart';
 import 'user/login.dart';
 import 'patient/signup.dart';
@@ -110,18 +111,18 @@ Future<void> _initHive() async {
     'name': 'Admin',
   });
 
-  /*final doctorBox = Hive.box('doctors');
+  final doctorBox = Hive.box('doctors');
   await doctorBox.put('32727485A', {
     'dni': '32727485A',
     'collegiateNumber': '123456789',
-    'password': '12345678',
+    'password': encryptPassword('12345678'),
     'email': 'doctor@doctor.com',
     'name': 'Doctor Doctor',
   });
   await doctorBox.put('87654321X', {
     'dni': '87654321X',
     'collegiateNumber': '987654321',
-    'password': '12345678',
+    'password': encryptPassword('12345678'),
     'email': 'doctor2@doctor2.com',
     'name': 'Doctor2 Doctor2',
   });
@@ -129,16 +130,16 @@ Future<void> _initHive() async {
   final patientBox = Hive.box('patients');
   await patientBox.put('32738039T', {
     'dni': '32738039T',
-    'password': '12345678',
+    'password': encryptPassword('12345678'),
     'email': 'jaime@doctor.com',
     'name': 'Jiame Doctor',
     'doctor': '0',
   });
   await patientBox.put('12345678Z', {
     'dni': '12345678Z',
-    'password': '12345678',
+    'password': encryptPassword('12345678'),
     'email': 'paciente2@paciente2.com',
     'name': 'paciente 2',
     'doctor': '0',
-  });*/
+  });
 }

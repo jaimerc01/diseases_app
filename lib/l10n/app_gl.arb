@@ -59,6 +59,11 @@
     "borrar_cuenta": "Eliminar conta",
 
     "actualizado_ok": "Datos actualizados correctamente",
+    "fecha": "Data",
+    "resultado": "Resultado",
+    "precision": "Precisión",
+
+    "historial_vacio": "O rexistro está baleiro",
 
     "confirmar_borrado_elemento": "Confirmar eliminación",
     "borrado_elemento_ok": "Elemento eliminado correctamente",

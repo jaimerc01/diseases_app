@@ -24,7 +24,7 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      appBar: AppBar(title: Text(widget.title!)),
+      appBar: AppBar(title: Text(widget.title ?? 'Default Title')),
       drawer: const DrawerApp(drawerValue: 0),
       body: Center(
         child: Column(
@@ -41,7 +41,8 @@ class _DashboardState extends State<Dashboard> {
               _boxPatients.isNotEmpty &&
                       _boxLogin.isNotEmpty &&
                       _boxPatients.containsKey(_boxLogin.get('dni'))
-                  ? _boxPatients.get(_boxLogin.get('dni'))['name'].toString()
+                  ? (_boxPatients.get(_boxLogin.get('dni'))?['name'] ?? '')
+                      .toString()
                   : '',
               style: subtitleTextStyle,
             ),
@@ -49,7 +50,8 @@ class _DashboardState extends State<Dashboard> {
               _boxAdmins.isNotEmpty &&
                       _boxLogin.isNotEmpty &&
                       _boxAdmins.containsKey(_boxLogin.get('dni'))
-                  ? _boxAdmins.get(_boxLogin.get('dni'))['name'].toString()
+                  ? (_boxAdmins.get(_boxLogin.get('dni'))?['name'] ?? '')
+                      .toString()
                   : '',
               style: subtitleTextStyle,
             ),
@@ -57,7 +59,8 @@ class _DashboardState extends State<Dashboard> {
               _boxDoctors.isNotEmpty &&
                       _boxLogin.isNotEmpty &&
                       _boxDoctors.containsKey(_boxLogin.get('dni'))
-                  ? _boxDoctors.get(_boxLogin.get('dni'))['name'].toString()
+                  ? (_boxDoctors.get(_boxLogin.get('dni'))?['name'] ?? '')
+                      .toString()
                   : '',
               style: subtitleTextStyle,
             )

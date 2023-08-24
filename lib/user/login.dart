@@ -3,6 +3,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../styles.dart';
 import 'encrypt_password.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+//import '../database/database_helper.dart';
+//import 'package:sqflite/sqflite.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -30,9 +32,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     _boxPatientHistory.clear();
-    /*if (_boxLogin.get('loginStatus') == false) {
-      Navigator.pushNamed(context, '/');
-    }*/
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -50,6 +49,7 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 100),
               TextFormField(
+                key: const Key('dni'),
                 style: formFieldTextStyle,
                 controller: _controllerDni,
                 keyboardType: TextInputType.text,
@@ -78,6 +78,7 @@ class _LoginState extends State<Login> {
               ),
               const SizedBox(height: 10),
               TextFormField(
+                key: const Key('password'),
                 style: formFieldTextStyle,
                 controller: _controllerPassword,
                 focusNode: _focusNodePassword,
@@ -136,7 +137,6 @@ class _LoginState extends State<Login> {
                       ),
                       onPressed: () {
                         if (_formKey.currentState?.validate() ?? false) {
-                          _boxLogin.put('loginStatus', true);
                           _boxLogin.put('dni', _controllerDni.text);
 
                           Navigator.pushReplacementNamed(context, '/');
