@@ -16,9 +16,16 @@ class _DrawerAppState extends State<DrawerApp> {
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
   final _boxAdmins = Hive.box('admins');
+  final _boxPatientsHistory = Hive.box('patientHistory');
+  final _boxDoctorPatients = Hive.box('doctorPatients');
 
+  // Función para comprobar el usuario y mostrar las opciones del menú
+  // dependiendo de si es un paciente, un doctor o un administrador
   List<Widget> _checkUser() {
+    final dni = _boxLogin.get('dni');
+    if (dni == null) return [];
     final drawerItems = <Widget>[
+      // Opción de inicio común en todos
       ListTile(
         leading: const Icon(
           Icons.home,
@@ -34,7 +41,9 @@ class _DrawerAppState extends State<DrawerApp> {
         },
       ),
     ];
-    if (_boxPatients.containsKey(_boxLogin.get('dni'))) {
+    // Si el usuario es un paciente, se añaden las opciones de clasificador e
+    // historial
+    if (_boxPatients.containsKey(dni)) {
       drawerItems.addAll([
         ListTile(
           leading: const Icon(
@@ -65,7 +74,9 @@ class _DrawerAppState extends State<DrawerApp> {
           },
         ),
       ]);
-    } else if (_boxAdmins.containsKey(_boxLogin.get('dni'))) {
+      // Si el usuario es un administrador, se añaden las opciones de ver los
+      // los doctores
+    } else if (_boxAdmins.containsKey(dni)) {
       drawerItems.addAll([
         ListTile(
           leading: const Icon(
@@ -82,6 +93,8 @@ class _DrawerAppState extends State<DrawerApp> {
           },
         ),
       ]);
+      // Si el usuario es un doctor, se añaden las opciones de ver los pacientes
+      // asignados
     } else {
       drawerItems.add(ListTile(
         leading: const Icon(
@@ -99,6 +112,8 @@ class _DrawerAppState extends State<DrawerApp> {
       ));
     }
 
+    // Opciones comunes a todos los usuarios, que son ver el perfil y cerrar
+    // sesión
     drawerItems.addAll([
       ListTile(
         leading: const Icon(
@@ -124,7 +139,9 @@ class _DrawerAppState extends State<DrawerApp> {
           style: drawerTextStyle,
         ),
         onTap: () {
-          _boxLogin.delete(_boxLogin.get('dni'));
+          _boxLogin.clear();
+          _boxPatientsHistory.clear();
+          _boxDoctorPatients.clear();
           Navigator.pushReplacementNamed(context, '/login');
         },
       ),

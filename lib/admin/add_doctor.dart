@@ -51,6 +51,7 @@ class _AddDoctorState extends State<AddDoctor> {
           child: Column(
             children: [
               const SizedBox(height: 50),
+              // Formulario de registro de médicos (campo DNI/NIE)
               TextFormField(
                 key: const Key('dniAdd'),
                 style: formFieldTextStyle,
@@ -86,6 +87,7 @@ class _AddDoctorState extends State<AddDoctor> {
                     _focusNodeCollegiateNumber.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro de médicos (campo número colegiado)
               TextFormField(
                 key: const Key('collegiateNumberAdd'),
                 style: formFieldTextStyle,
@@ -124,6 +126,7 @@ class _AddDoctorState extends State<AddDoctor> {
                 onEditingComplete: () => _focusNodeEmail.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro de médicos (campo email)
               TextFormField(
                 key: const Key('emailAdd'),
                 style: formFieldTextStyle,
@@ -152,6 +155,7 @@ class _AddDoctorState extends State<AddDoctor> {
                 onEditingComplete: () => _focusNodeNombre.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro de médicos (campo nombre)
               TextFormField(
                 key: const Key('nameAdd'),
                 style: formFieldTextStyle,
@@ -178,6 +182,7 @@ class _AddDoctorState extends State<AddDoctor> {
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro de médicos (campo contraseña)
               TextFormField(
                 key: const Key('passwordAdd'),
                 style: formFieldTextStyle,
@@ -217,6 +222,7 @@ class _AddDoctorState extends State<AddDoctor> {
                     _focusNodeConfirmPassword.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro de médicos (campo confirmar contraseña)
               TextFormField(
                 key: const Key('confirmPasswordAdd'),
                 style: formFieldTextStyle,
@@ -258,6 +264,7 @@ class _AddDoctorState extends State<AddDoctor> {
                 children: [
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.6,
+                    // Botón de añadir médico
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size.fromHeight(50),
@@ -276,7 +283,7 @@ class _AddDoctorState extends State<AddDoctor> {
                             'email': _controllerEmail.text,
                             'name': _controllerName.text,
                           });
-
+                          // Mensaje de registro correcto
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               width: 200,

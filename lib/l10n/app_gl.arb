@@ -1,4 +1,15 @@
 {
+    "titulo_dashboard": "Inicio",
+    "titulo_recogniser": "Clasificador",
+    "titulo_profile": "Perfil persoal",
+    "titulo_update": "Actualizar perfil",
+    "titulo_history": "Rexistro",
+    "titulo_doctors": "Lista de doutores",
+    "titulo_patients": "Consultar pacientes",
+    "titulo_add": "Engadir doutor",
+    "titulo_assign": "Asignar paciente",
+    "titulo_change" : "Cambiar contrasinal",
+
     "titulo_registro": "Cree a súa conta persoal",
     "titulo_inicio_sesion": "Inicie sesión na súa conta",
     "titulo_inicio": "Benvido de novo",

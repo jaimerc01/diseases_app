@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:diseases_app/user/encrypt_password.dart';
 
 void main() {
   const channel = MethodChannel('plugins.flutter.io/path_provider');
@@ -30,18 +31,21 @@ void main() {
     await Hive.openBox('patients');
     await Hive.openBox('doctors');
     await Hive.openBox('login');
+    await Hive.openBox('admins');
 
     final patientBox = Hive.box('patients');
     final boxLogin = Hive.box('login');
     final doctorsBox = Hive.box('doctors');
+    final adminBox = Hive.box('admins');
 
     await patientBox.clear();
     await boxLogin.clear();
     await doctorsBox.clear();
+    await adminBox.clear();
 
     await patientBox.put('32738039T', {
       'dni': '32738039T',
-      'password': '12345678',
+      'password': encryptPassword('12345678'),
       'email': 'patient@patient.com',
       'name': 'Patient',
     });
@@ -85,7 +89,8 @@ void main() {
     expect(find.text('Enter your password'), findsNWidgets(2));
 
     //Introducir datos incorrectos
-    await tester.enterText(find.byKey(const Key('currentPassword')), '1');
+    await tester.enterText(
+        find.byKey(const Key('currentPassword')), '123456789');
     await tester.enterText(find.byKey(const Key('newPassword')), '1');
     await tester.enterText(find.byKey(const Key('confirmPasswordChange')), '2');
     await tester.tap(find.byType(ElevatedButton));

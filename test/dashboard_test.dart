@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:diseases_app/user/encrypt_password.dart';
 
 void main() {
   const channel = MethodChannel('plugins.flutter.io/path_provider');
@@ -44,7 +45,7 @@ void main() {
 
     await adminBox.put('00000000T', {
       'dni': '00000000T',
-      'password': '12345678',
+      'password': encryptPassword('12345678'),
       'email': 'admin@admin.com',
       'name': 'Admin',
     });

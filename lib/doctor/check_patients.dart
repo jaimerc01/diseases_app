@@ -20,6 +20,7 @@ class _CheckPatientsState extends State<CheckPatients> {
   final _box = Hive.box('doctorPatients');
   final List<String> _contenido = [];
 
+  // Función para comprobar los pacientes asignados al doctor
   void _checkPatients() {
     int index;
 
@@ -32,6 +33,8 @@ class _CheckPatientsState extends State<CheckPatients> {
     }
   }
 
+  // Función para mostrar el historial de un paciente, enviando a la pantalla
+  // de historial el DNI/NIE del paciente
   void checkHistory(int index) async {
     int i;
     for (i = 0; i < _boxPatients.length; i++) {
@@ -47,7 +50,9 @@ class _CheckPatientsState extends State<CheckPatients> {
     }
   }
 
+  // Función para desasignar un paciente
   void _unassignPatient(int index) async {
+    // Cuadro de diálogo para confirmar el desasignado
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -56,12 +61,14 @@ class _CheckPatientsState extends State<CheckPatients> {
           content:
               Text(AppLocalizations.of(context).pregunta_desasignar_pacientes),
           actions: <Widget>[
+            // Opción para cancelar el desasignado
             TextButton(
               child: Text(AppLocalizations.of(context).boton_cancelar),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
+            // Opción para confirmar el desasignado
             TextButton(
               child: Text(AppLocalizations.of(context).boton_desasignar),
               onPressed: () {
@@ -81,6 +88,7 @@ class _CheckPatientsState extends State<CheckPatients> {
                             builder: (BuildContext context) => super.widget));
                   }
                 }
+                // Muestra un mensaje de que el paciente se ha desasignado
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     width: 180,
@@ -113,6 +121,7 @@ class _CheckPatientsState extends State<CheckPatients> {
         body: Column(
           children: <Widget>[
             Expanded(
+              // Muestra un mensaje si no hay pacientes asignados
               child: (_box.isEmpty)
                   ? Center(
                       child: Text(
@@ -124,6 +133,7 @@ class _CheckPatientsState extends State<CheckPatients> {
                         ),
                       ),
                     )
+                  // Muestra la lista de pacientes
                   : ListView.builder(
                       itemCount: _box.length,
                       itemBuilder: (BuildContext context, int index) {
@@ -156,6 +166,7 @@ class _CheckPatientsState extends State<CheckPatients> {
                                 ),
                               ),
                             ),
+                            // Botón para mostrar el historial del paciente
                             Expanded(
                               flex: 1,
                               child: IconButton(
@@ -170,6 +181,7 @@ class _CheckPatientsState extends State<CheckPatients> {
                                 },
                               ),
                             ),
+                            // Botón para desasignar un paciente
                             Expanded(
                               flex: 1,
                               child: IconButton(
@@ -190,6 +202,7 @@ class _CheckPatientsState extends State<CheckPatients> {
             ),
           ],
         ),
+        // Botón para asignar un paciente
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: pantoneBlueVeryPeryVariant,
           onPressed: () => Navigator.pushNamed(context, '/assignPatient'),

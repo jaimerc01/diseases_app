@@ -2,16 +2,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
-import '../patient/classifier.dart';
+import 'classifier.dart';
 import '../styles.dart';
-import 'disease_image.dart';
-import 'drawer_app.dart';
+import '../widget/drawer_app.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-const _labelsFileName = 'assets/labels.txt';
-const _modelFileName = 'model_unquant.tflite';
+const _labelsFile = 'assets/labels.txt';
+const _modelFile = 'model_unquant.tflite';
 
 class DiseaseRecogniser extends StatefulWidget {
   final String? title;
@@ -32,7 +31,7 @@ enum _ResultStatus {
 class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   File? _imageFile;
   final picker = ImagePicker();
-  double _bigSize(BuildContext context) =>
+  double _imageSize(BuildContext context) =>
       MediaQuery.of(context).size.width * 0.65;
   final _boxHistory = Hive.box('history');
   final _boxLogin = Hive.box('login');
@@ -48,22 +47,24 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     _loadClassifier();
   }
 
+  // Carga e inicializa el clasificador
   Future<void> _loadClassifier() async {
     final classifier = await Classifier.loadClassifier(
-      labelsFileName: _labelsFileName,
-      modelFileName: _modelFileName,
+      labelsFileName: _labelsFile,
+      modelFileName: _modelFile,
     );
     _classifier = classifier;
   }
 
-  void _onPickImage(ImageSource source) async {
-    final pickedImage = await picker.pickImage(source: source);
+  // Función para seleccionar una imagen de la galería
+  void _selectImage(ImageSource source) async {
+    final selectedImage = await picker.pickImage(source: source);
 
-    if (pickedImage == null) {
-      return;
+    if (selectedImage == null) {
+      return null;
     }
 
-    final imageFile = File(pickedImage.path);
+    final imageFile = File(selectedImage.path);
     setState(() {
       _imageFile = imageFile;
     });
@@ -74,8 +75,10 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
   void _analyzeImage(File image) {
     final imageInput = img.decodeImage(image.readAsBytesSync())!;
 
-    final resultCategory = _classifier!.predict(imageInput);
+    // Clasifica la imagen
+    final resultCategory = _classifier!.classify(imageInput);
 
+    // Obtiene el resultado
     final diseaseLabel = resultCategory.label;
     final accuracy = resultCategory.score;
     final result = resultCategory.score >= 0.8
@@ -89,22 +92,28 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
     });
   }
 
+  // Almacena el resultado en el historial
   void _storeInHistory() {
-    final now = DateTime.now();
-    final formatter = DateFormat('dd-MM-yyyy');
-    final formattedDate = formatter.format(now);
-    _boxHistory.put(_imageFile.toString(), {
-      'dni': '${_boxLogin.get('dni')}',
-      'path': _imageFile?.path,
-      'date': formattedDate,
-      'result': _diseaseLabel,
-      'accuracy': _accuracy,
-    });
+    final dni = _boxLogin.get('dni');
+    if (dni == null) return;
+    if (!_boxHistory.containsKey(_imageFile.toString())) {
+      final now = DateTime.now();
+      final formatter = DateFormat('dd-MM-yyyy');
+      final formattedDate = formatter.format(now);
+      _boxHistory.put(_imageFile.toString(), {
+        'dni': '${_boxLogin.get('dni')}',
+        'path': _imageFile?.path,
+        'date': formattedDate,
+        'result': _diseaseLabel,
+        'accuracy': _accuracy,
+      });
+    }
   }
 
   Widget _buildResultView() {
     var title = '';
 
+    // Si no obtiene más de un 80% de precisión, no se reconoce la enfermedad
     if (_resultStatus == _ResultStatus.notFound) {
       title = AppLocalizations.of(context).no_reconocido;
     } else if (_resultStatus == _ResultStatus.found) {
@@ -122,6 +131,7 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
 
     _storeInHistory();
 
+    // Muestra el resultado
     return Column(
       children: [
         Text(title, style: classifierTextStyle),
@@ -144,6 +154,7 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 0),
+                // Título de la página
                 child: Text(
                   AppLocalizations.of(context).titulo_clasificador,
                   style: titleTextStyle,
@@ -154,12 +165,25 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
               Stack(
                 alignment: AlignmentDirectional.center,
                 children: [
-                  DiseaseImage(file: _imageFile, size: _bigSize(context)),
+                  // Contenedor de la imagen donde se muestra
+                  Container(
+                    width: _imageSize(context),
+                    height: _imageSize(context),
+                    color: Colors.blueGrey,
+                    child: (_imageFile == null)
+                        ? Center(
+                            child: Text(
+                                AppLocalizations.of(context).seleccione_foto,
+                                style: imageTextStyle))
+                        : Image.file(_imageFile!, fit: BoxFit.cover),
+                  ),
                 ],
               ),
               const SizedBox(height: 10),
+              // Muestra el resultado
               _buildResultView(),
               const SizedBox(height: 30),
+              // Botón para abrir la galería
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.6,
                 child: ElevatedButton(
@@ -169,7 +193,7 @@ class _DiseaseRecogniserState extends State<DiseaseRecogniser> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  onPressed: () => _onPickImage(ImageSource.gallery),
+                  onPressed: () => _selectImage(ImageSource.gallery),
                   child: Text(AppLocalizations.of(context).boton_galeria,
                       style: buttonTextStyle),
                 ),

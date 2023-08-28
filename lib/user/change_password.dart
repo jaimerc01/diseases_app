@@ -20,6 +20,7 @@ class _ChangePassword extends State<ChangePassword> {
   final _boxLogin = Hive.box('login');
   final _boxPatients = Hive.box('patients');
   final _boxDoctors = Hive.box('doctors');
+  final _boxAdmins = Hive.box('admins');
   bool _obscurePassword = true;
 
   String _dni = '';
@@ -37,6 +38,7 @@ class _ChangePassword extends State<ChangePassword> {
   final FocusNode _focusNodeNewPassword = FocusNode();
   final FocusNode _focusNodeConfirmNewPassword = FocusNode();
 
+  // Función para inicializar los datos del usuario dependiendo del tipo
   void _initUser() {
     _dni = '${_boxLogin.get('dni')}';
     if (_boxPatients.containsKey(_boxLogin.get('dni'))) {
@@ -48,6 +50,9 @@ class _ChangePassword extends State<ChangePassword> {
       _email = '${_boxDoctors.get(_boxLogin.get('dni'))['email']}';
       _doctorCollegiateNumber =
           '${_boxDoctors.get(_boxLogin.get('dni'))['collegiateNumber']}';
+    } else if (_boxAdmins.containsKey(_boxLogin.get('dni'))) {
+      _name = '${_boxAdmins.get(_boxLogin.get('dni'))['name']}';
+      _email = '${_boxAdmins.get(_boxLogin.get('dni'))['email']}';
     }
   }
 
@@ -71,6 +76,7 @@ class _ChangePassword extends State<ChangePassword> {
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(children: [
                   const SizedBox(height: 50),
+                  // Formulario para cambiar la contraseña (campo actual)
                   TextFormField(
                     key: const Key('currentPassword'),
                     style: formFieldTextStyle,
@@ -103,16 +109,34 @@ class _ChangePassword extends State<ChangePassword> {
                             .introduzca_actual_contrasena;
                       } else if (_boxPatients
                           .containsKey(_boxLogin.get('dni'))) {
-                        if (encryptPassword(value) !=
+                        if (!verifyPassword(
+                            value,
                             _boxPatients
-                                .get(_boxLogin.get('dni'))['password']) {
+                                .get(_boxLogin.get('dni'))['password']
+                                .toString())) {
                           return AppLocalizations.of(context)
                               .incorrecta_contrasena;
                         }
                       } else if (_boxDoctors
                           .containsKey(_boxLogin.get('dni'))) {
-                        if (encryptPassword(value) !=
-                            _boxDoctors.get(_boxLogin.get('dni'))['password']) {
+                        if (!verifyPassword(
+                            value,
+                            _boxDoctors
+                                .get(_boxLogin.get('dni'))['password']
+                                .toString())) {
+                          return AppLocalizations.of(context)
+                              .incorrecta_contrasena;
+                        }
+                      } else if (_boxAdmins.containsKey(_boxLogin.get('dni'))) {
+                        debugPrint('Admin');
+                        if (!verifyPassword(
+                            value,
+                            _boxAdmins
+                                .get(_boxLogin.get('dni'))['password']
+                                .toString())) {
+                          debugPrint(value);
+                          debugPrint(
+                              _boxAdmins.get(_boxLogin.get('dni')).toString());
                           return AppLocalizations.of(context)
                               .incorrecta_contrasena;
                         }
@@ -123,6 +147,7 @@ class _ChangePassword extends State<ChangePassword> {
                         _focusNodeNewPassword.requestFocus(),
                   ),
                   const SizedBox(height: 10),
+                  // Formulario para cambiar la contraseña (campo nueva)
                   TextFormField(
                     key: const Key('newPassword'),
                     style: formFieldTextStyle,
@@ -163,6 +188,8 @@ class _ChangePassword extends State<ChangePassword> {
                         _focusNodeConfirmNewPassword.requestFocus(),
                   ),
                   const SizedBox(height: 10),
+                  // Formulario para cambiar la contraseña
+                  //(campo confirmar nueva)
                   TextFormField(
                     key: const Key('confirmPasswordChange'),
                     style: formFieldTextStyle,
@@ -205,6 +232,7 @@ class _ChangePassword extends State<ChangePassword> {
                   const SizedBox(height: 50),
                   Column(
                     children: [
+                      // Botón para cambiar la contraseña
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: ElevatedButton(
@@ -226,7 +254,8 @@ class _ChangePassword extends State<ChangePassword> {
                                   'name': _name,
                                   'doctor': _patientDoctor,
                                 });
-                              } else {
+                              } else if (_boxDoctors
+                                  .containsKey(_boxLogin.get('dni'))) {
                                 _boxDoctors.put(_dni, {
                                   'dni': _dni,
                                   'password': encryptPassword(
@@ -235,8 +264,17 @@ class _ChangePassword extends State<ChangePassword> {
                                   'name': _name,
                                   'collegiateNumber': _doctorCollegiateNumber,
                                 });
+                              } else {
+                                _boxAdmins.put(_dni, {
+                                  'dni': _dni,
+                                  'password': encryptPassword(
+                                      _controllerConfirmNewPassword.text),
+                                  'email': _email,
+                                  'name': _name,
+                                });
                               }
-
+                              // Muestra un mensaje de que la contraseña se
+                              //ha cambiado
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   width: 200,

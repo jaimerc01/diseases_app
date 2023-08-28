@@ -1,13 +1,8 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'user/encrypt_password.dart';
 import 'widget/dashboard.dart';
 import 'user/login.dart';
 import 'patient/signup.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'widget/disease_recogniser.dart';
+import 'classifier/disease_recogniser.dart';
 import 'user/profile.dart';
 import 'user/update_profile.dart';
 import 'patient/history.dart';
@@ -19,11 +14,16 @@ import 'user/change_password.dart';
 import 'styles.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'database/init_hive.dart';
+import 'database/data_hive.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await _initHive();
+  // Inicialización de Hive
+  await initHive();
+  // Inserción de datos en Hive
+  await insertDataHive();
   runApp(const MyApp());
 }
 
@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
             seedColor: pantoneBlueVeryPeryVariant,
           ),
         ),
+        //Se establecen los idiomas disponibles
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -50,96 +51,31 @@ class MyApp extends StatelessWidget {
           Locale('es'),
           Locale('gl'),
         ],
+        //Se establecen la ruta inicial y las rutas de la aplicación
         initialRoute: Login.routeName,
         routes: {
-          Dashboard.routeName: (context) => const Dashboard(title: 'Inicio'),
+          Dashboard.routeName: (context) =>
+              Dashboard(title: AppLocalizations.of(context).titulo_dashboard),
           Login.routeName: (context) => const Login(),
-          DiseaseRecogniser.routeName: (context) =>
-              const DiseaseRecogniser(title: 'Clasificador'),
+          DiseaseRecogniser.routeName: (context) => DiseaseRecogniser(
+              title: AppLocalizations.of(context).titulo_clasificador),
           Profile.routeName: (context) =>
-              const Profile(title: 'Perfil personal'),
+              Profile(title: AppLocalizations.of(context).titulo_profile),
           Signup.routeName: (context) => const Signup(),
           UpdateProfile.routeName: (context) =>
-              const UpdateProfile(title: 'Actualizar perfil'),
-          History.routeName: (context) => const History(title: 'Historial'),
+              UpdateProfile(title: AppLocalizations.of(context).titulo_update),
+          History.routeName: (context) =>
+              History(title: AppLocalizations.of(context).titulo_history),
           CheckDoctors.routeName: (context) =>
-              const CheckDoctors(title: 'Lista de doctores'),
+              CheckDoctors(title: AppLocalizations.of(context).titulo_doctors),
           AddDoctor.routeName: (context) =>
-              const AddDoctor(title: 'Añadir doctor'),
-          CheckPatients.routeName: (context) =>
-              const CheckPatients(title: 'Consultar pacientes'),
+              AddDoctor(title: AppLocalizations.of(context).titulo_add),
+          CheckPatients.routeName: (context) => CheckPatients(
+              title: AppLocalizations.of(context).titulo_patients),
           AssingPatient.routeName: (context) =>
-              const AssingPatient(title: 'Asignar paciente'),
+              AssingPatient(title: AppLocalizations.of(context).titulo_assign),
           ChangePassword.routeName: (context) =>
-              const ChangePassword(title: 'Cambiar contraseña'),
+              ChangePassword(title: AppLocalizations.of(context).titulo_change),
         });
   }
-}
-
-Future<void> _initHive() async {
-  const flutterSecureStorage = FlutterSecureStorage();
-  final encryptionKey = await flutterSecureStorage.read(key: 'key');
-
-  Uint8List keyBytes;
-
-  if (encryptionKey == null) {
-    final key = Hive.generateSecureKey();
-    keyBytes = Uint8List.fromList(key);
-    await flutterSecureStorage.write(
-      key: 'key',
-      value: base64UrlEncode(key),
-    );
-  } else {
-    keyBytes = base64Url.decode(encryptionKey);
-  }
-  final encryptionCipher = HiveAesCipher(keyBytes);
-
-  await Hive.initFlutter();
-  await Hive.openBox('patients', encryptionCipher: encryptionCipher);
-  await Hive.openBox('admins', encryptionCipher: encryptionCipher);
-  await Hive.openBox('doctors', encryptionCipher: encryptionCipher);
-  await Hive.openBox('history', encryptionCipher: encryptionCipher);
-  await Hive.openBox('patientHistory', encryptionCipher: encryptionCipher);
-  await Hive.openBox('login', encryptionCipher: encryptionCipher);
-  await Hive.openBox('doctorPatients', encryptionCipher: encryptionCipher);
-
-  final adminBox = Hive.box('admins');
-  await adminBox.put('00000000T', {
-    'dni': '00000000T',
-    'password': '12345678',
-    'email': 'admin@admin.com',
-    'name': 'Admin',
-  });
-
-  final doctorBox = Hive.box('doctors');
-  await doctorBox.put('32727485A', {
-    'dni': '32727485A',
-    'collegiateNumber': '123456789',
-    'password': encryptPassword('12345678'),
-    'email': 'doctor@doctor.com',
-    'name': 'Doctor Doctor',
-  });
-  await doctorBox.put('87654321X', {
-    'dni': '87654321X',
-    'collegiateNumber': '987654321',
-    'password': encryptPassword('12345678'),
-    'email': 'doctor2@doctor2.com',
-    'name': 'Doctor2 Doctor2',
-  });
-
-  final patientBox = Hive.box('patients');
-  await patientBox.put('32738039T', {
-    'dni': '32738039T',
-    'password': encryptPassword('12345678'),
-    'email': 'jaime@doctor.com',
-    'name': 'Jiame Doctor',
-    'doctor': '0',
-  });
-  await patientBox.put('12345678Z', {
-    'dni': '12345678Z',
-    'password': encryptPassword('12345678'),
-    'email': 'paciente2@paciente2.com',
-    'name': 'paciente 2',
-    'doctor': '0',
-  });
 }

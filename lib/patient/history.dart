@@ -21,9 +21,12 @@ class _HistoryState extends State<History> {
   final _boxPatientHistory = Hive.box('patientHistory');
   final _boxPatients = Hive.box('patients');
   final _boxDoctors = Hive.box('doctors');
+  // Se utiliza esta variable porque cuando se pretende borrar el elemento en
+  //deleteResult, patientHistory está vacío y no se puede acceder a su contenido
   List<String> contenido = [];
   bool empty = true;
 
+  // Muestra un diálogo de confirmación para borrar el resultado
   Future<void> _confirmDeletion(int index) async {
     return showDialog<void>(
       context: context,
@@ -70,15 +73,18 @@ class _HistoryState extends State<History> {
     );
   }
 
+  // Comprueba si el paciente tiene resultados asociados
   void _checkPatientHistory(String dni) {
     int index;
     final boxHistoryLength = _boxHistory.length - 1;
 
+    // Se ejecuta si el paciente está viendo su propio historial
     if (_boxPatients.containsKey(_boxLogin.get('dni'))) {
       if (boxHistoryLength >= 0) {
         _boxPatientHistory.clear();
         for (index = 0; index < boxHistoryLength; index++) {
           if (_boxHistory.getAt(index)['dni'] == _boxLogin.get('dni')) {
+            debugPrint('${_boxHistory.getAt(index)}');
             _boxPatientHistory.add(_boxHistory.getAt(index));
           }
         }
@@ -86,7 +92,9 @@ class _HistoryState extends State<History> {
           contenido.add('${_boxPatientHistory.getAt(index)['path']}');
         }
       }
-    } else {
+    }
+    // Se ejecuta si el médico está viendo el historial de un paciente
+    else {
       if (boxHistoryLength >= 0) {
         _boxPatientHistory.clear();
         for (index = 0; index < boxHistoryLength; index++) {
@@ -99,11 +107,13 @@ class _HistoryState extends State<History> {
     }
   }
 
+  // Borra el resultado seleccionado
   void _deleteResult(int index) {
     int i;
     for (i = 0; i < _boxHistory.length - 1; i++) {
       if (_boxHistory.getAt(i)['dni'] == _boxLogin.get('dni') &&
           _boxHistory.getAt(i)['path'] == contenido[index]) {
+        debugPrint('${_boxHistory.getAt(i)}');
         _boxHistory.deleteAt(index);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext context) => super.widget));
@@ -113,7 +123,12 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
+    // Se inicializa a true para que no se muestre el mensaje de historial vacío
+    // cuando el médico sea el que acceda a un historial vacío, ya que no tiene
+    // la lista contenido para comprobarlo
     empty = true;
+    // El caso en el que el médico solicite ver el historial de un paciente,
+    // se obtiene el dni del paciente a través de los argumentos de la ruta
     final args = ModalRoute.of(context)!.settings.arguments.toString();
     final dni = args.replaceAll(RegExp('[^A-Za-z0-9]'), '');
     _checkPatientHistory(dni);
@@ -121,10 +136,12 @@ class _HistoryState extends State<History> {
         backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         appBar: AppBar(title: Text(widget.title!)),
         drawer: const DrawerApp(drawerValue: 3),
+        // Comprueba si el paciente tiene resultados asociados
         body: (contenido.isEmpty &&
                     _boxPatients.containsKey(_boxLogin.get('dni'))) ||
                 (empty == true && _boxDoctors.containsKey(_boxLogin.get('dni')))
             ? Center(
+                // Texto que se muestra si el paciente no tiene resultados
                 child: Text(
                   AppLocalizations.of(context).historial_vacio,
                   textDirection: TextDirection.ltr,
@@ -134,6 +151,7 @@ class _HistoryState extends State<History> {
                   ),
                 ),
               )
+            // Muestra los resultados del paciente
             : ListView.builder(
                 itemCount: _boxPatientHistory.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -147,11 +165,13 @@ class _HistoryState extends State<History> {
                             child: SizedBox(
                               width: 100,
                               height: 100,
+                              // Imagen del resultado
                               child: Image.file(File(
                                       // ignore: lines_longer_than_80_chars
                                       "${_boxPatientHistory.getAt(index)['path']}"),
                                   fit: BoxFit.fitHeight),
                             )),
+                        // Datos del resultado
                         Expanded(
                           flex: 2,
                           child: Padding(
@@ -179,6 +199,8 @@ class _HistoryState extends State<History> {
                             ),
                           ),
                         ),
+                        // Botón para borrar el resultado si es el propio
+                        // paciente el que está viendo el historial
                         Expanded(
                           flex: 1,
                           child: _boxPatients.containsKey(_boxLogin.get('dni'))

@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:diseases_app/user/encrypt_password.dart';
 
 void main() {
   const channel = MethodChannel('plugins.flutter.io/path_provider');
@@ -32,22 +33,28 @@ void main() {
     await Hive.openBox('doctors');
     await Hive.openBox('login');
     await Hive.openBox('history');
+    await Hive.openBox('patientHistory');
+    await Hive.openBox('doctorPatients');
 
     final patientBox = Hive.box('patients');
     final boxLogin = Hive.box('login');
     final doctorsBox = Hive.box('doctors');
     final adminsBox = Hive.box('admins');
     final historyBox = Hive.box('history');
+    final boxPatientsHistory = Hive.box('patientHistory');
+    final boxDoctorPatients = Hive.box('doctorPatients');
 
     await patientBox.clear();
     await boxLogin.clear();
     await doctorsBox.clear();
     await adminsBox.clear();
     await historyBox.clear();
+    await boxPatientsHistory.clear();
+    await boxDoctorPatients.clear();
 
     await patientBox.put('32738039T', {
       'dni': '32738039T',
-      'password': '12345678',
+      'password': encryptPassword('12345678'),
       'email': 'patient@patient.com',
       'name': 'Patient',
     });

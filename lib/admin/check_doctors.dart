@@ -17,19 +17,23 @@ class CheckDoctors extends StatefulWidget {
 class _CheckDoctorsState extends State<CheckDoctors> {
   final _boxDoctors = Hive.box('doctors');
 
+  // Función para borrar un doctor
   void _deleteDoctor(int index) {
+    // Cuadro de diálogo para confirmar el borrado
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
         title: Text(AppLocalizations.of(context).confirmar_borrado_doctor),
         content: Text(AppLocalizations.of(context).pregunta_borrado_doctor),
         actions: [
+          // Opción para cancelar el borrado
           TextButton(
             child: Text(AppLocalizations.of(context).boton_cancelar),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
+          // Opción para confirmar el borrado
           TextButton(
             child: Text(AppLocalizations.of(context).boton_confirmar),
             onPressed: () {
@@ -39,6 +43,8 @@ class _CheckDoctorsState extends State<CheckDoctors> {
                   context,
                   MaterialPageRoute(
                       builder: (BuildContext context) => super.widget));
+              // Muestra un mensaje de que el borrado se ha realizado
+              // correctamente
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   width: 240,
@@ -76,6 +82,7 @@ class _CheckDoctorsState extends State<CheckDoctors> {
                   ),
                 ),
               )
+            // Muestra la lista de doctores
             : ListView.builder(
                 itemCount: _boxDoctors.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -117,6 +124,7 @@ class _CheckDoctorsState extends State<CheckDoctors> {
                         ),
                         Expanded(
                           flex: 1,
+                          // Botón para borrar un doctor
                           child: IconButton(
                             icon: const Icon(
                               Icons.delete,
@@ -131,6 +139,7 @@ class _CheckDoctorsState extends State<CheckDoctors> {
                     ),
                   );
                 }),
+        // Botón para añadir un doctor
         floatingActionButton: FloatingActionButton.extended(
           backgroundColor: pantoneBlueVeryPeryVariant,
           onPressed: () => Navigator.pushNamed(context, '/addDoctor'),

@@ -37,6 +37,7 @@ class _AssingPatientState extends State<AssingPatient> {
           child: Column(
             children: [
               const SizedBox(height: 50),
+              // Formulario para asignar un paciente (campo DNI/NIE)
               TextFormField(
                 key: const Key('dniAssign'),
                 style: formFieldTextStyle,
@@ -74,6 +75,7 @@ class _AssingPatientState extends State<AssingPatient> {
                 },
               ),
               const SizedBox(height: 50),
+              // Botón para asignar el paciente
               Column(
                 children: [
                   SizedBox(
@@ -98,6 +100,8 @@ class _AssingPatientState extends State<AssingPatient> {
                             'doctor': _boxLogin.get('dni'),
                           });
 
+                          // Muestra un mensaje de que el paciente se ha
+                          // asignado correctamente
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               width: 260,

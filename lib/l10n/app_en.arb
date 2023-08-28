@@ -1,4 +1,15 @@
 {
+    "titulo_dashboard": "Dashboard",
+    "titulo_recogniser": "Classifier",
+    "titulo_profile": "Personal profile",
+    "titulo_update": "Update profile",
+    "titulo_history": "History",
+    "titulo_doctors": "Doctors' list",
+    "titulo_patients": "Check patients",
+    "titulo_add": "Add doctor",
+    "titulo_assign": "Assign patient",
+    "titulo_change" : "Change password",
+
     "titulo_registro": "Create your personal account",
     "titulo_inicio_sesion": "Log in your account",
     "titulo_inicio": "Welcome back",

@@ -1,4 +1,4 @@
-0 normal
-1 esophagitis
-2 ulcerative_c...
-3 polyps
+0 Normal
+1 Esofagitis
+2 Colitis ulcerosa
+3 Pólipos

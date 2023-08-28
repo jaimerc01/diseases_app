@@ -7,10 +7,38 @@ import 'dart:math';
 
 typedef ClassifierLabels = List<String>;
 
+// Clase que representa el modelo de clasificación
+class ClassifierModel {
+  Interpreter interpreter;
+
+  List<int> inputShape;
+  List<int> outputShape;
+
+  TfLiteType inputType;
+  TfLiteType outputType;
+
+  ClassifierModel({
+    required this.interpreter,
+    required this.inputShape,
+    required this.outputShape,
+    required this.inputType,
+    required this.outputType,
+  });
+}
+
+class ClassifierCategory {
+  final String label;
+  final double score;
+
+  ClassifierCategory(this.label, this.score);
+}
+
+// Clase que representa el clasificador
 class Classifier {
   final ClassifierLabels _classifierLabels;
   final ClassifierModel _classifierModel;
 
+  // Constructor privado
   Classifier._({
     required ClassifierLabels labels,
     required ClassifierModel model,
@@ -23,7 +51,9 @@ class Classifier {
   }) async {
     try {
       final labels = await _loadLabels(labelsFileName);
+      // Inicializa el modelo con el que se va a trabajar
       final model = await _loadModel(modelFileName);
+      // Ya tenemos el clasificador preparado
       return Classifier._(labels: labels, model: model);
     } catch (e) {
       if (e is Error) {
@@ -33,11 +63,11 @@ class Classifier {
     }
   }
 
-  ClassifierCategory predict(Image image) {
+  ClassifierCategory classify(Image image) {
     // Carga la imagen y la convierte a TensorImage para el TensorFlow Input
     final inputImage = _preProcessInput(image);
 
-    // Define el buffer de salida
+    // Define el búfer de salida
     final outputBuffer = TensorBuffer.createFixedSize(
       _classifierModel.outputShape,
       _classifierModel.outputType,
@@ -56,6 +86,7 @@ class Classifier {
   static Future<ClassifierLabels> _loadLabels(String labelsFile) async {
     final rawLabels = await FileUtil.loadLabels(labelsFile);
 
+    // Elimina el número de etiqueta del archivo de etiquetas
     final labels = rawLabels
         .map((label) => label.substring(label.indexOf(' ')).trim())
         .toList();
@@ -81,6 +112,7 @@ class Classifier {
     );
   }
 
+  // Preprocesa la imagen
   TensorImage _preProcessInput(Image image) {
     final inputTensor = TensorImage(_classifierModel.inputType);
     inputTensor.loadImage(image);
@@ -115,33 +147,8 @@ class Classifier {
       categoryList.add(category);
     });
 
-    categoryList.sort((a, b) => (b.score > a.score ? 1 : -1));
+    categoryList.sort((first, second) => (second.score > first.score ? 1 : -1));
 
     return categoryList;
   }
-}
-
-class ClassifierCategory {
-  final String label;
-  final double score;
-
-  ClassifierCategory(this.label, this.score);
-}
-
-class ClassifierModel {
-  Interpreter interpreter;
-
-  List<int> inputShape;
-  List<int> outputShape;
-
-  TfLiteType inputType;
-  TfLiteType outputType;
-
-  ClassifierModel({
-    required this.interpreter,
-    required this.inputShape,
-    required this.outputShape,
-    required this.inputType,
-    required this.outputType,
-  });
 }

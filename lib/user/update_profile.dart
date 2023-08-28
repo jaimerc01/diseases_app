@@ -28,6 +28,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
 
+  // Función para obtener los datos del usuario dependiendo de si es un doctor
+  // o un paciente
   void _initUser() {
     _controllerDni.text = '${_boxLogin.get('dni')}';
     if (_boxPatients.containsKey(_boxLogin.get('dni'))) {
@@ -67,6 +69,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Column(children: [
                   const SizedBox(height: 50),
+                  // Formulario para actualizar los datos del usuario
+                  // (campo email)
                   TextFormField(
                     key: const Key('emailUpdate'),
                     style: formFieldTextStyle,
@@ -95,6 +99,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     },
                   ),
                   const SizedBox(height: 10),
+                  // Formulario para actualizar los datos del usuario
+                  // (campo nombre)
                   TextFormField(
                     key: const Key('nameUpdate'),
                     style: formFieldTextStyle,
@@ -123,6 +129,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     children: [
                       SizedBox(
                         width: MediaQuery.of(context).size.width * 0.6,
+                        // Botón para actualizar los datos del usuario
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(50),
@@ -151,6 +158,8 @@ class _UpdateProfileState extends State<UpdateProfile> {
                                 });
                               }
 
+                              // Muestra un mensaje de que el usuario se ha
+                              // actualizado correctamente
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   width: 200,

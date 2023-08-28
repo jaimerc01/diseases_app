@@ -20,50 +20,45 @@ class _DashboardState extends State<Dashboard> {
   final _boxAdmins = Hive.box('admins');
   final _boxDoctors = Hive.box('doctors');
 
+  // Obtiene el nombre del usuario logeado
+  String? getLoggedUserName() {
+    final dni = _boxLogin.get('dni');
+    if (dni == null) return '';
+
+    if (_boxPatients.containsKey(dni)) {
+      return _boxPatients.get(dni)?['name'].toString();
+    } else if (_boxAdmins.containsKey(dni)) {
+      return _boxAdmins.get(dni)?['name'].toString();
+    } else if (_boxDoctors.containsKey(dni)) {
+      return _boxDoctors.get(dni)?['name'].toString();
+    }
+
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      appBar: AppBar(title: Text(widget.title ?? 'Default Title')),
+      appBar: AppBar(title: Text(widget.title ?? 'Dashboard')),
       drawer: const DrawerApp(drawerValue: 0),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 150),
+            // Mensaje de bienvenida
             Text(
               AppLocalizations.of(context).titulo_inicio,
               style: subtitleTextStyle,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
+            // Nombre del usuario logeado
             Text(
-              _boxPatients.isNotEmpty &&
-                      _boxLogin.isNotEmpty &&
-                      _boxPatients.containsKey(_boxLogin.get('dni'))
-                  ? (_boxPatients.get(_boxLogin.get('dni'))?['name'] ?? '')
-                      .toString()
-                  : '',
+              getLoggedUserName().toString(),
               style: subtitleTextStyle,
             ),
-            Text(
-              _boxAdmins.isNotEmpty &&
-                      _boxLogin.isNotEmpty &&
-                      _boxAdmins.containsKey(_boxLogin.get('dni'))
-                  ? (_boxAdmins.get(_boxLogin.get('dni'))?['name'] ?? '')
-                      .toString()
-                  : '',
-              style: subtitleTextStyle,
-            ),
-            Text(
-              _boxDoctors.isNotEmpty &&
-                      _boxLogin.isNotEmpty &&
-                      _boxDoctors.containsKey(_boxLogin.get('dni'))
-                  ? (_boxDoctors.get(_boxLogin.get('dni'))?['name'] ?? '')
-                      .toString()
-                  : '',
-              style: subtitleTextStyle,
-            )
           ],
         ),
       ),

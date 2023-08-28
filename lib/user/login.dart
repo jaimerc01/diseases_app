@@ -3,8 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../styles.dart';
 import 'encrypt_password.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-//import '../database/database_helper.dart';
-//import 'package:sqflite/sqflite.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -30,9 +28,14 @@ class _LoginState extends State<Login> {
   final _boxDoctors = Hive.box('doctors');
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    _boxLogin.clear();
     _boxPatientHistory.clear();
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Form(
@@ -42,12 +45,14 @@ class _LoginState extends State<Login> {
           child: Column(
             children: [
               const SizedBox(height: 150),
+              // Mensaje de inicio de sesión
               Text(
                 AppLocalizations.of(context).titulo_inicio_sesion,
                 style: subtitleTextStyle,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 100),
+              // Formulario de inicio de sesión (campo DNI/NIE)
               TextFormField(
                 key: const Key('dni'),
                 style: formFieldTextStyle,
@@ -77,6 +82,7 @@ class _LoginState extends State<Login> {
                 },
               ),
               const SizedBox(height: 10),
+              // Formulario de inicio de sesión (campo contraseña)
               TextFormField(
                 key: const Key('password'),
                 style: formFieldTextStyle,
@@ -107,16 +113,25 @@ class _LoginState extends State<Login> {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context).introduzca_contrasena;
                   } else if (_boxPatients.containsKey(_controllerDni.text) &&
-                      encryptPassword(value) !=
-                          _boxPatients.get(_controllerDni.text)['password']) {
+                      !verifyPassword(
+                          value,
+                          _boxPatients
+                              .get(_controllerDni.text)['password']
+                              .toString())) {
                     return AppLocalizations.of(context).incorrecta_contrasena;
                   } else if (_boxAdmins.containsKey(_controllerDni.text) &&
-                      value !=
-                          _boxAdmins.get(_controllerDni.text)['password']) {
+                      !verifyPassword(
+                          value,
+                          _boxAdmins
+                              .get(_controllerDni.text)['password']
+                              .toString())) {
                     return AppLocalizations.of(context).incorrecta_contrasena;
                   } else if (_boxDoctors.containsKey(_controllerDni.text) &&
-                      encryptPassword(value) !=
-                          _boxDoctors.get(_controllerDni.text)['password']) {
+                      !verifyPassword(
+                          value,
+                          _boxDoctors
+                              .get(_controllerDni.text)['password']
+                              .toString())) {
                     return AppLocalizations.of(context).incorrecta_contrasena;
                   }
 
@@ -126,6 +141,7 @@ class _LoginState extends State<Login> {
               const SizedBox(height: 60),
               Column(
                 children: [
+                  // Botón de inicio de sesión
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.6,
                     child: ElevatedButton(
@@ -151,9 +167,11 @@ class _LoginState extends State<Login> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // Texto de registro
                       Text(
                         AppLocalizations.of(context).pregunta_inicio_sesion,
                       ),
+                      // Botón de registro
                       TextButton(
                         onPressed: () {
                           _formKey.currentState?.reset();

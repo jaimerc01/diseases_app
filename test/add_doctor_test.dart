@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:diseases_app/user/encrypt_password.dart';
 
 void main() {
   const channel = MethodChannel('plugins.flutter.io/path_provider');
@@ -41,14 +42,14 @@ void main() {
 
     await adminBox.put('00000000T', {
       'dni': '00000000T',
-      'password': '12345678',
+      'password': encryptPassword('12345678'),
       'email': 'admin@admin.com',
       'name': 'Admin',
     });
 
     await patientsBox.put('32738039T', {
       'dni': '32738039T',
-      'password': 'qwertyui',
+      'password': encryptPassword('qwertyui'),
       'email': 'patient@patient.com',
       'name': 'Patient',
       'doctor': '0',
@@ -56,7 +57,7 @@ void main() {
 
     await doctorsBox.put('12345678Z', {
       'dni': '12345678Z',
-      'password': '87654321',
+      'password': encryptPassword('87654321'),
       'email': 'doctor@doctor.com',
       'name': 'Doctor',
       'collegiateNumber': '123456789',

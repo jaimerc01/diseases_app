@@ -44,12 +44,14 @@ class _SignupState extends State<Signup> {
           child: Column(
             children: [
               const SizedBox(height: 100),
+              // Mensaje de registro
               Text(
                 AppLocalizations.of(context).titulo_registro,
                 style: subtitleTextStyle,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 50),
+              // Formulario de registro (campo DNI/NIE)
               TextFormField(
                 key: const Key('dniSignup'),
                 style: formFieldTextStyle,
@@ -83,6 +85,7 @@ class _SignupState extends State<Signup> {
                 onEditingComplete: () => _focusNodeEmail.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro (campo email)
               TextFormField(
                 key: const Key('emailSignup'),
                 style: formFieldTextStyle,
@@ -110,6 +113,7 @@ class _SignupState extends State<Signup> {
                 onEditingComplete: () => _focusNodeNombre.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro (campo nombre)
               TextFormField(
                 key: const Key('nameSignup'),
                 style: formFieldTextStyle,
@@ -135,6 +139,7 @@ class _SignupState extends State<Signup> {
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro (campo contraseña)
               TextFormField(
                 key: const Key('passwordSignup'),
                 style: formFieldTextStyle,
@@ -173,6 +178,7 @@ class _SignupState extends State<Signup> {
                     _focusNodeConfirmPassword.requestFocus(),
               ),
               const SizedBox(height: 10),
+              // Formulario de registro (campo confirmar contraseña)
               TextFormField(
                 key: const Key('confirmPasswordSignup'),
                 style: formFieldTextStyle,
@@ -212,6 +218,7 @@ class _SignupState extends State<Signup> {
               const SizedBox(height: 50),
               Column(
                 children: [
+                  // Botón de registro
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.6,
                     child: ElevatedButton(
@@ -261,7 +268,9 @@ class _SignupState extends State<Signup> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // Texto de inicio de sesión
                       Text(AppLocalizations.of(context).pregunta_registro),
+                      // Botón de inicio de sesión
                       TextButton(
                         onPressed: () => Navigator.pop(context),
                         child:
