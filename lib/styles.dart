@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 const pantoneBlueVeryPeryVariant = Color.fromARGB(255, 75, 77, 177);
 
 const titleTextStyle = TextStyle(
-    fontSize: 48.0,
+    fontSize: 40.0,
     color: pantoneBlueVeryPeryVariant,
     fontWeight: FontWeight.bold);
 

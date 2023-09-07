@@ -63,7 +63,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Disease Recogniser Test'), findsOneWidget);
-    expect(find.text('Disease classifier'), findsOneWidget);
+    expect(find.text('Digestive diseases classifier'), findsOneWidget);
     expect(find.byType(ElevatedButton), findsOneWidget);
   });
 }
