@@ -128,15 +128,11 @@ class _ChangePassword extends State<ChangePassword> {
                               .incorrecta_contrasena;
                         }
                       } else if (_boxAdmins.containsKey(_boxLogin.get('dni'))) {
-                        debugPrint('Admin');
                         if (!verifyPassword(
                             value,
                             _boxAdmins
                                 .get(_boxLogin.get('dni'))['password']
                                 .toString())) {
-                          debugPrint(value);
-                          debugPrint(
-                              _boxAdmins.get(_boxLogin.get('dni')).toString());
                           return AppLocalizations.of(context)
                               .incorrecta_contrasena;
                         }

@@ -84,7 +84,6 @@ class _HistoryState extends State<History> {
         _boxPatientHistory.clear();
         for (index = 0; index < boxHistoryLength; index++) {
           if (_boxHistory.getAt(index)['dni'] == _boxLogin.get('dni')) {
-            debugPrint('${_boxHistory.getAt(index)}');
             _boxPatientHistory.add(_boxHistory.getAt(index));
           }
         }
@@ -113,8 +112,7 @@ class _HistoryState extends State<History> {
     for (i = 0; i < _boxHistory.length - 1; i++) {
       if (_boxHistory.getAt(i)['dni'] == _boxLogin.get('dni') &&
           _boxHistory.getAt(i)['path'] == contenido[index]) {
-        debugPrint('${_boxHistory.getAt(i)}');
-        _boxHistory.deleteAt(index);
+        _boxHistory.deleteAt(i);
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext context) => super.widget));
       }
